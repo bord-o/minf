@@ -1,12 +1,15 @@
 %{
 
+let pp s = printfn s
 %}
 
 // The start token becomes a parser function in the compiled code:
 %start start
 
 // Regular tokens
-%token LET NUMBER ID EXPEND
+%token LET NUMBER ID EXPEND ASSIGN OPAREN CPAREN IF THEN ELSE IS COLON FUN PLUS MINUS TIMES LT GT LTE GTE
+
+%left PLUS MINUS TIMES LT GT LTE GTE
 
 // Misc tokens
 %token EOF
@@ -19,13 +22,66 @@
 
 // These are the rules of the grammar along with the F# code of the 
 // actions executed as rules are reduced.  
-start: File end { $1 }
+start: stms end { $1 }
      | end      { $1 }
 
-File:
-	| ID File				{printfn "HELLO"; $2}
-	| ID					{printfn "HELLO" } 
+stms:
+    | stm stms {pp "stms"; $2}
+    | stm {$1}
 
+stm:
+    | dec EXPEND {pp "dec"; $1}
+    | exp EXPEND {pp "exp"; $1}
+
+dec:
+    | LET ID ASSIGN exp {pp "let"}
+    | LET ID ASSIGN fun {pp "fun"}
+
+fun:
+    | FUN ID OPAREN fun_args CPAREN COLON ID IS exp {pp "fun declaration"}
+
+fun_args:
+    | fun_arg fun_args {}
+    | fun_arg {}
+
+fun_arg:
+    | ID COLON ID {}
+
+exp:
+    | OPAREN exp CPAREN {$2}
+    | number_lit {$1}
+    | identifier_lit {$1}
+    | op_exp {$1}
+    | call_exp {$1}
+    | if_exp {$1}
+
+if_exp:
+    | IF exp THEN exp ELSE exp {pp "if then else"}
+
+call_exp:
+    | ID args {pp "function call"; $2}
+
+args:
+    | exp args {$2}
+    | exp {$1}
+
+op_exp:
+    | exp PLUS exp {pp "plus"} 
+    | exp MINUS exp {pp "minus"}
+    | exp TIMES exp {pp "times"}
+
+    | exp ASSIGN exp {pp "equals"}
+    | exp LT exp {pp "lt"}
+    | exp LTE exp {pp "lte"}
+    | exp GT exp {pp "gt"}
+    | exp GTE exp {pp "gte"}
+
+number_lit:
+    | NUMBER {pp "number"}
+    
+identifier_lit:
+    | ID {pp "identifier"}
+    
 
 // Using F# keywords for nonterminal names is okay.
 end: EOF { printfn "EOF" }

@@ -4,7 +4,7 @@
 open System.IO
 open FSharp.Text.Lexing
 
-let testLexerAndParserFromString text expectedCount = 
+let parseString text = 
     let lexbuf = LexBuffer<char>.FromString text
 
     let countFromParser = Parser.start Lexer.tokenstream lexbuf
@@ -12,9 +12,10 @@ let testLexerAndParserFromString text expectedCount =
 
     //printfn "countFromParser: result = %d, expected %d" countFromParser expectedCount
 
-let testLexerAndParserFromFile (fileName:string) expectedCount = 
+let parseFile (fileName:string) = 
     use textReader = new System.IO.StreamReader(fileName)
     let lexbuf = LexBuffer<char>.FromTextReader textReader
+    printfn "%A" <| lexbuf.ToString()
 
     let countFromParser = Parser.start Lexer.tokenstream lexbuf
     ()
@@ -25,8 +26,8 @@ let testLexerAndParserFromFile (fileName:string) expectedCount =
 //testLexerAndParserFromString "hello hello" 2
 
 let testFile = Path.Combine(__SOURCE_DIRECTORY__, "test.txt")
-File.WriteAllText(testFile, "hello hello")
-testLexerAndParserFromFile testFile 2
+//File.WriteAllText(testFile, "hello hello")
+parseFile testFile
 
 printfn "Press any key to continue..."
 System.Console.ReadLine() |> ignore

@@ -6,18 +6,62 @@ type token =
   | NUMBER
   | ID
   | EXPEND
+  | ASSIGN
+  | OPAREN
+  | CPAREN
+  | IF
+  | THEN
+  | ELSE
+  | IS
+  | COLON
+  | FUN
+  | PLUS
+  | MINUS
+  | TIMES
+  | LT
+  | GT
+  | LTE
+  | GTE
 type tokenId = 
     | TOKEN_EOF
     | TOKEN_LET
     | TOKEN_NUMBER
     | TOKEN_ID
     | TOKEN_EXPEND
+    | TOKEN_ASSIGN
+    | TOKEN_OPAREN
+    | TOKEN_CPAREN
+    | TOKEN_IF
+    | TOKEN_THEN
+    | TOKEN_ELSE
+    | TOKEN_IS
+    | TOKEN_COLON
+    | TOKEN_FUN
+    | TOKEN_PLUS
+    | TOKEN_MINUS
+    | TOKEN_TIMES
+    | TOKEN_LT
+    | TOKEN_GT
+    | TOKEN_LTE
+    | TOKEN_GTE
     | TOKEN_end_of_input
     | TOKEN_error
 type nonTerminalId = 
     | NONTERM__startstart
     | NONTERM_start
-    | NONTERM_File
+    | NONTERM_stms
+    | NONTERM_stm
+    | NONTERM_dec
+    | NONTERM_fun
+    | NONTERM_fun_args
+    | NONTERM_fun_arg
+    | NONTERM_exp
+    | NONTERM_if_exp
+    | NONTERM_call_exp
+    | NONTERM_args
+    | NONTERM_op_exp
+    | NONTERM_number_lit
+    | NONTERM_identifier_lit
     | NONTERM_end
 /// This function maps tokens to integer indexes
 val tagOfToken: token -> int
