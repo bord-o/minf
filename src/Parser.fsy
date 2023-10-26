@@ -1,5 +1,5 @@
 %{
-
+module A = Ast
 let pp s = printfn s
 %}
 
@@ -20,36 +20,36 @@ let pp s = printfn s
 
 // This is the type of the data produced by a successful reduction of the 'start'
 // symbol:
-%type <unit> start
+%type <Ast.prog> start
 
 %%
 
 // These are the rules of the grammar along with the F# code of the 
 // actions executed as rules are reduced.  
-start: stms end { $1 }
-     | end      { $1 }
+start: stms end { A.Prog($1) }
+     | end      { A.Blank }
 
 stms:
-    | stm stms {pp "stms"; $2}
-    | stm {$1}
+    | stm stms {pp "stms"; $1::$2}
+    | stm {$1::[]}
 
 stm:
-    | dec EXPEND {pp "dec"; $1}
-    | exp EXPEND {pp "exp"; $1}
+    | dec EXPEND {pp "dec"; A.Dec($1)}
+    | exp EXPEND {pp "exp"; A.Exp($1)}
 
 dec:
-    | LET ID ASSIGN exp {pp "let"}
-    | LET ID ASSIGN fun {pp "fun"}
+    | LET ID ASSIGN exp {pp "let"; A.VarDec("ID", $4)}
+    | LET ID ASSIGN fun {pp "fun"; A.FunDec("ID", $4)}
 
 fun:
-    | FUN ID OPAREN fun_args CPAREN COLON ID IS exp {pp "fun declaration"}
+    | FUN ID OPAREN fun_args CPAREN COLON ID IS exp  {pp "fun declaration"; {name="NAME"; intype="IN"; outtype="OUT"; args= $4; body= $9} }
 
 fun_args:
-    | fun_arg fun_args {}
-    | fun_arg {}
+    | fun_arg fun_args {$1::$2}
+    | fun_arg {$1::[]}
 
 fun_arg:
-    | ID COLON ID {}
+    | ID COLON ID {pp "funarg"; {argname="ID"; type'="ID"}}
 
 exp:
     | OPAREN exp CPAREN {$2}
@@ -60,32 +60,32 @@ exp:
     | if_exp {$1}
 
 if_exp:
-    | IF exp THEN exp ELSE exp %prec IFX  {pp "if then else"} 
+    | IF exp THEN exp ELSE exp %prec IFX  {pp "if then else"; A.IfExp($2, $4, $6)} 
 
 call_exp:
-    | ID args {pp "function call"; $2}
+    | ID args {pp "function call"; A.CallExp("TESTID", $2)}
 
 args:
     | exp args {$2}
     | exp %prec FARGS  {$1}
 
 op_exp:
-    | exp PLUS exp {pp "plus"} 
-    | exp MINUS exp {pp "minus"}
-    | exp TIMES exp {pp "times"}
+    | exp PLUS exp {pp "plus"; A.OpExp($1,A.Plus,$3)} 
+    | exp MINUS exp {pp "minus"; A.OpExp($1,A.Minus,$3)}
+    | exp TIMES exp {pp "times"; A.OpExp($1,A.Times,$3)}
 
-    | exp ASSIGN exp {pp "equals"}
-    | exp LT exp {pp "lt"}
-    | exp LTE exp {pp "lte"}
-    | exp GT exp {pp "gt"}
-    | exp GTE exp {pp "gte"}
+    | exp ASSIGN exp {pp "equals"; A.OpExp($1,A.Eq,$3)}
+    | exp LT exp {pp "lt"; A.OpExp($1,A.LT,$3)}
+    | exp LTE exp {pp "lte"; A.OpExp($1,A.LTE,$3)}
+    | exp GT exp {pp "gt"; A.OpExp($1,A.GT,$3)}
+    | exp GTE exp {pp "gte"; A.OpExp($1,A.GTE,$3)}
 
 number_lit:
-    | NUMBER {pp "number"}
+    | NUMBER {pp "number"; A.NumExp(111)}
     
 identifier_lit:
-    | ID {pp "identifier"}
+    | ID {pp "identifier"; A.IdExp("test")}
     
 
 // Using F# keywords for nonterminal names is okay.
-end: EOF { printfn "EOF" }
+end: EOF { printfn "EOF"}

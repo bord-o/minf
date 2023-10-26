@@ -5,7 +5,7 @@ open FSharp.Text.Lexing
 open FSharp.Text.Parsing.ParseHelpers
 # 1 "src/Parser.fsy"
 
-
+module A = Ast
 let pp s = printfn s
 
 # 11 "src/Parser.fs"
@@ -233,7 +233,7 @@ let _fsyacc_immediateActions = [|65535us;49152us;65535us;16385us;16386us;65535us
 let _fsyacc_reductions = lazy [|
 # 234 "src/Parser.fs"
         (fun (parseState : FSharp.Text.Parsing.IParseState) ->
-            let _1 = parseState.GetInput(1) :?> unit in
+            let _1 = parseState.GetInput(1) :?> Ast.prog in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
@@ -248,10 +248,10 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 29 "src/Parser.fsy"
-                                       _1 
+                                       A.Prog(_1) 
                    )
 # 29 "src/Parser.fsy"
-                 : unit));
+                 : Ast.prog));
 # 255 "src/Parser.fs"
         (fun (parseState : FSharp.Text.Parsing.IParseState) ->
             let _1 = parseState.GetInput(1) :?> 'gentype_end in
@@ -259,10 +259,10 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 30 "src/Parser.fsy"
-                                       _1 
+                                       A.Blank 
                    )
 # 30 "src/Parser.fsy"
-                 : unit));
+                 : Ast.prog));
 # 266 "src/Parser.fs"
         (fun (parseState : FSharp.Text.Parsing.IParseState) ->
             let _1 = parseState.GetInput(1) :?> 'gentype_stm in
@@ -271,7 +271,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 33 "src/Parser.fsy"
-                                     pp "stms"; _2
+                                     pp "stms"; _1::_2
                    )
 # 33 "src/Parser.fsy"
                  : 'gentype_stms));
@@ -282,7 +282,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 34 "src/Parser.fsy"
-                                _1
+                                _1::[]
                    )
 # 34 "src/Parser.fsy"
                  : 'gentype_stms));
@@ -293,7 +293,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 37 "src/Parser.fsy"
-                                       pp "dec"; _1
+                                       pp "dec"; A.Dec(_1)
                    )
 # 37 "src/Parser.fsy"
                  : 'gentype_stm));
@@ -304,7 +304,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 38 "src/Parser.fsy"
-                                       pp "exp"; _1
+                                       pp "exp"; A.Exp(_1)
                    )
 # 38 "src/Parser.fsy"
                  : 'gentype_stm));
@@ -315,7 +315,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 41 "src/Parser.fsy"
-                                              pp "let"
+                                              pp "let"; A.VarDec("ID", _4)
                    )
 # 41 "src/Parser.fsy"
                  : 'gentype_dec));
@@ -326,7 +326,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 42 "src/Parser.fsy"
-                                              pp "fun"
+                                              pp "fun"; A.FunDec("ID", _4)
                    )
 # 42 "src/Parser.fsy"
                  : 'gentype_dec));
@@ -338,7 +338,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 45 "src/Parser.fsy"
-                                                                          pp "fun declaration"
+                                                                           pp "fun declaration"; {name="NAME"; intype="IN"; outtype="OUT"; args= _4; body= _9} 
                    )
 # 45 "src/Parser.fsy"
                  : 'gentype_fun));
@@ -350,7 +350,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 48 "src/Parser.fsy"
-                                             
+                                             _1::_2
                    )
 # 48 "src/Parser.fsy"
                  : 'gentype_fun_args));
@@ -361,7 +361,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 49 "src/Parser.fsy"
-                                    
+                                    _1::[]
                    )
 # 49 "src/Parser.fsy"
                  : 'gentype_fun_args));
@@ -371,7 +371,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 52 "src/Parser.fsy"
-                                        
+                                        pp "funarg"; {argname="ID"; type'="ID"}
                    )
 # 52 "src/Parser.fsy"
                  : 'gentype_fun_arg));
@@ -450,7 +450,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 63 "src/Parser.fsy"
-                                                                pp "if then else"
+                                                                pp "if then else"; A.IfExp(_2, _4, _6)
                    )
 # 63 "src/Parser.fsy"
                  : 'gentype_if_exp));
@@ -461,7 +461,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 66 "src/Parser.fsy"
-                                    pp "function call"; _2
+                                    pp "function call"; A.CallExp("TESTID", _2)
                    )
 # 66 "src/Parser.fsy"
                  : 'gentype_call_exp));
@@ -496,7 +496,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 73 "src/Parser.fsy"
-                                         pp "plus"
+                                         pp "plus"; A.OpExp(_1,A.Plus,_3)
                    )
 # 73 "src/Parser.fsy"
                  : 'gentype_op_exp));
@@ -508,7 +508,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 74 "src/Parser.fsy"
-                                          pp "minus"
+                                          pp "minus"; A.OpExp(_1,A.Minus,_3)
                    )
 # 74 "src/Parser.fsy"
                  : 'gentype_op_exp));
@@ -520,7 +520,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 75 "src/Parser.fsy"
-                                          pp "times"
+                                          pp "times"; A.OpExp(_1,A.Times,_3)
                    )
 # 75 "src/Parser.fsy"
                  : 'gentype_op_exp));
@@ -532,7 +532,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 77 "src/Parser.fsy"
-                                           pp "equals"
+                                           pp "equals"; A.OpExp(_1,A.Eq,_3)
                    )
 # 77 "src/Parser.fsy"
                  : 'gentype_op_exp));
@@ -544,7 +544,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 78 "src/Parser.fsy"
-                                       pp "lt"
+                                       pp "lt"; A.OpExp(_1,A.LT,_3)
                    )
 # 78 "src/Parser.fsy"
                  : 'gentype_op_exp));
@@ -556,7 +556,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 79 "src/Parser.fsy"
-                                        pp "lte"
+                                        pp "lte"; A.OpExp(_1,A.LTE,_3)
                    )
 # 79 "src/Parser.fsy"
                  : 'gentype_op_exp));
@@ -568,7 +568,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 80 "src/Parser.fsy"
-                                       pp "gt"
+                                       pp "gt"; A.OpExp(_1,A.GT,_3)
                    )
 # 80 "src/Parser.fsy"
                  : 'gentype_op_exp));
@@ -580,7 +580,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 81 "src/Parser.fsy"
-                                        pp "gte"
+                                        pp "gte"; A.OpExp(_1,A.GTE,_3)
                    )
 # 81 "src/Parser.fsy"
                  : 'gentype_op_exp));
@@ -590,7 +590,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 84 "src/Parser.fsy"
-                                   pp "number"
+                                   pp "number"; A.NumExp(111)
                    )
 # 84 "src/Parser.fsy"
                  : 'gentype_number_lit));
@@ -600,7 +600,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 87 "src/Parser.fsy"
-                               pp "identifier"
+                               pp "identifier"; A.IdExp("test")
                    )
 # 87 "src/Parser.fsy"
                  : 'gentype_identifier_lit));
@@ -610,7 +610,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 91 "src/Parser.fsy"
-                                printfn "EOF" 
+                                printfn "EOF"
                    )
 # 91 "src/Parser.fsy"
                  : 'gentype_end));
@@ -637,5 +637,5 @@ let tables : FSharp.Text.Parsing.Tables<_> =
     numTerminals = 24;
     productionToNonTerminalTable = _fsyacc_productionToNonTerminalTable  }
 let engine lexer lexbuf startState = tables.Interpret(lexer, lexbuf, startState)
-let start lexer lexbuf : unit =
+let start lexer lexbuf : Ast.prog =
     engine lexer lexbuf 0 :?> _

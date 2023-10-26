@@ -7,7 +7,7 @@ open FSharp.Text.Lexing
 let parseString text = 
     let lexbuf = LexBuffer<char>.FromString text
 
-    let countFromParser = Parser.start Lexer.tokenstream lexbuf
+    let ast = Parser.start Lexer.tokenstream lexbuf
     ()
 
     //printfn "countFromParser: result = %d, expected %d" countFromParser expectedCount
@@ -17,7 +17,8 @@ let parseFile (fileName:string) =
     let lexbuf = LexBuffer<char>.FromTextReader textReader
     printfn "%A" <| lexbuf.ToString()
 
-    let countFromParser = Parser.start Lexer.tokenstream lexbuf
+    let ast = Parser.start Lexer.tokenstream lexbuf
+    printfn "%A" <| ast.ToString()
     ()
 
     //printfn "countFromParser: result = %d, expected %d" countFromParser expectedCount
