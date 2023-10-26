@@ -1,0 +1,93 @@
+%{
+module A = Ast
+let pp s = printfn s
+%}
+
+// The start token becomes a parser function in the compiled code:
+%start start
+
+// Regular tokens
+%token LET EXPEND ASSIGN OPAREN CPAREN IF THEN ELSE IS COLON FUN PLUS MINUS TIMES LT GT LTE GTE
+%token <int> NUMBER
+%token <string> ID
+
+%left ASSIGN PLUS MINUS TIMES LT GT LTE GTE
+%right IF ID OPAREN NUMBER
+
+%nonassoc IFX FARGS
+
+
+// Misc tokens
+%token EOF
+
+// This is the type of the data produced by a successful reduction of the 'start'
+// symbol:
+%type <Ast.prog> start
+
+%%
+
+// These are the rules of the grammar along with the F# code of the 
+// actions executed as rules are reduced.  
+start: stms end { A.Prog($1) }
+     | end      { A.Blank }
+
+stms:
+    | stm stms {pp "stms"; $1::$2}
+    | stm {$1::[]}
+
+stm:
+    | dec EXPEND {pp "dec"; A.Dec($1)}
+    | exp EXPEND {pp "exp"; A.Exp($1)}
+
+dec:
+    | LET ID ASSIGN exp {pp "let"; A.VarDec($2, $4)}
+    | LET ID ASSIGN fun {pp "fun"; A.FunDec($2, $4)}
+
+fun:
+    | FUN ID OPAREN fun_args CPAREN COLON ID IS exp  {pp "fun declaration"; {name=$2; outtype=$7; args= $4; body= $9} }
+
+fun_args:
+    | fun_arg fun_args {$1::$2}
+    | fun_arg {$1::[]}
+
+fun_arg:
+    | ID COLON ID {pp "funarg"; {argname=$1; type'=$3}}
+
+exp:
+    | OPAREN exp CPAREN {$2}
+    | number_lit {$1}
+    | identifier_lit {$1}
+    | op_exp {$1}
+    | call_exp {$1}
+    | if_exp {$1}
+
+if_exp:
+    | IF exp THEN exp ELSE exp %prec IFX  {pp "if then else"; A.IfExp($2, $4, $6)} 
+
+call_exp:
+    | ID args {pp "function call"; A.CallExp($1, $2)}
+
+args:
+    | exp args {$1::$2}
+    | exp %prec FARGS  {$1::[]}
+
+op_exp:
+    | exp PLUS exp {pp "plus"; A.OpExp($1,A.Plus,$3)} 
+    | exp MINUS exp {pp "minus"; A.OpExp($1,A.Minus,$3)}
+    | exp TIMES exp {pp "times"; A.OpExp($1,A.Times,$3)}
+
+    | exp ASSIGN exp {pp "equals"; A.OpExp($1,A.Eq,$3)}
+    | exp LT exp {pp "lt"; A.OpExp($1,A.LT,$3)}
+    | exp LTE exp {pp "lte"; A.OpExp($1,A.LTE,$3)}
+    | exp GT exp {pp "gt"; A.OpExp($1,A.GT,$3)}
+    | exp GTE exp {pp "gte"; A.OpExp($1,A.GTE,$3)}
+
+number_lit:
+    | NUMBER {pp "number"; A.NumExp($1)}
+    
+identifier_lit:
+    | ID {pp "identifier"; A.IdExp($1)}
+    
+
+// Using F# keywords for nonterminal names is okay.
+end: EOF { printfn "EOF"}
