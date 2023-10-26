@@ -9,7 +9,11 @@ let pp s = printfn s
 // Regular tokens
 %token LET NUMBER ID EXPEND ASSIGN OPAREN CPAREN IF THEN ELSE IS COLON FUN PLUS MINUS TIMES LT GT LTE GTE
 
-%left PLUS MINUS TIMES LT GT LTE GTE
+%left ASSIGN PLUS MINUS TIMES LT GT LTE GTE
+%right IF ID OPAREN NUMBER
+
+%nonassoc IFX FARGS
+
 
 // Misc tokens
 %token EOF
@@ -56,14 +60,14 @@ exp:
     | if_exp {$1}
 
 if_exp:
-    | IF exp THEN exp ELSE exp {pp "if then else"}
+    | IF exp THEN exp ELSE exp %prec IFX  {pp "if then else"} 
 
 call_exp:
     | ID args {pp "function call"; $2}
 
 args:
     | exp args {$2}
-    | exp {$1}
+    | exp %prec FARGS  {$1}
 
 op_exp:
     | exp PLUS exp {pp "plus"} 
