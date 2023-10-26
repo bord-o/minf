@@ -32,7 +32,7 @@ and exp =
     | IdExp of id
 
 and fundec = 
-    {name: id; intype: id; outtype:id; args: funargs; body: exp}
+    {name: id; outtype:id; args: funargs; body: exp}
 
 and funargs = funarg list
 

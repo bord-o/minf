@@ -147,12 +147,12 @@ and tokenstream  lexbuf =
           )
   | 8 -> ( 
 # 29 "src/Lexer.fsl"
-                                      Parser.ID(tokenstream lexbuf)
+                                      Parser.ID(LexBuffer<_>.LexemeString lexbuf)
 # 151 "src/Lexer.fs"
           )
   | 9 -> ( 
 # 30 "src/Lexer.fsl"
-                         Parser.NUMBER(System.Int32.Parse(tokenstream lexbuf))
+                         Parser.NUMBER(System.Int32.Parse(LexBuffer<_>.LexemeString lexbuf))
 # 156 "src/Lexer.fs"
           )
   | 10 -> ( 

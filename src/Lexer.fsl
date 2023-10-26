@@ -26,8 +26,8 @@ rule tokenstream = parse
 | ":"				{Parser.COLON}
 | "="			{ Parser.ASSIGN}
 
-| char(char|digit)?+ { Parser.ID(lexeme lexbuf)}
-| int			{ Parser.NUMBER(System.Int32.Parse(lexeme lexbuf))}
+| char(char|digit)?+ { Parser.ID(LexBuffer<_>.LexemeString lexbuf)}
+| int			{ Parser.NUMBER(System.Int32.Parse(LexBuffer<_>.LexemeString lexbuf))}
 | ";;"			{ Parser.EXPEND}
 
 | "+"			{Parser.PLUS}

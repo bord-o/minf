@@ -316,7 +316,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 43 "src/Parser.fsy"
-                                              pp "let"; A.VarDec("ID", _4)
+                                              pp "let"; A.VarDec(_2, _4)
                    )
 # 43 "src/Parser.fsy"
                  : 'gentype_dec));
@@ -328,7 +328,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 44 "src/Parser.fsy"
-                                              pp "fun"; A.FunDec("ID", _4)
+                                              pp "fun"; A.FunDec(_2, _4)
                    )
 # 44 "src/Parser.fsy"
                  : 'gentype_dec));
@@ -342,7 +342,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 47 "src/Parser.fsy"
-                                                                           pp "fun declaration"; {name="NAME"; intype="IN"; outtype="OUT"; args= _4; body= _9} 
+                                                                           pp "fun declaration"; {name=_2; outtype=_7; args= _4; body= _9} 
                    )
 # 47 "src/Parser.fsy"
                  : 'gentype_fun));
@@ -377,7 +377,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 54 "src/Parser.fsy"
-                                        pp "funarg"; {argname="ID"; type'="ID"}
+                                        pp "funarg"; {argname=_1; type'=_3}
                    )
 # 54 "src/Parser.fsy"
                  : 'gentype_fun_arg));
@@ -468,7 +468,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 68 "src/Parser.fsy"
-                                    pp "function call"; A.CallExp("TESTID", _2)
+                                    pp "function call"; A.CallExp(_1, _2)
                    )
 # 68 "src/Parser.fsy"
                  : 'gentype_call_exp));
@@ -598,7 +598,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 86 "src/Parser.fsy"
-                                   pp "number"; A.NumExp(111)
+                                   pp "number"; A.NumExp(_1)
                    )
 # 86 "src/Parser.fsy"
                  : 'gentype_number_lit));
@@ -609,7 +609,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 89 "src/Parser.fsy"
-                               pp "identifier"; A.IdExp("test")
+                               pp "identifier"; A.IdExp(_1)
                    )
 # 89 "src/Parser.fsy"
                  : 'gentype_identifier_lit));

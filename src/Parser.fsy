@@ -40,18 +40,18 @@ stm:
     | exp EXPEND {pp "exp"; A.Exp($1)}
 
 dec:
-    | LET ID ASSIGN exp {pp "let"; A.VarDec("ID", $4)}
-    | LET ID ASSIGN fun {pp "fun"; A.FunDec("ID", $4)}
+    | LET ID ASSIGN exp {pp "let"; A.VarDec($2, $4)}
+    | LET ID ASSIGN fun {pp "fun"; A.FunDec($2, $4)}
 
 fun:
-    | FUN ID OPAREN fun_args CPAREN COLON ID IS exp  {pp "fun declaration"; {name="NAME"; intype="IN"; outtype="OUT"; args= $4; body= $9} }
+    | FUN ID OPAREN fun_args CPAREN COLON ID IS exp  {pp "fun declaration"; {name=$2; outtype=$7; args= $4; body= $9} }
 
 fun_args:
     | fun_arg fun_args {$1::$2}
     | fun_arg {$1::[]}
 
 fun_arg:
-    | ID COLON ID {pp "funarg"; {argname="ID"; type'="ID"}}
+    | ID COLON ID {pp "funarg"; {argname=$1; type'=$3}}
 
 exp:
     | OPAREN exp CPAREN {$2}
@@ -65,7 +65,7 @@ if_exp:
     | IF exp THEN exp ELSE exp %prec IFX  {pp "if then else"; A.IfExp($2, $4, $6)} 
 
 call_exp:
-    | ID args {pp "function call"; A.CallExp("TESTID", $2)}
+    | ID args {pp "function call"; A.CallExp($1, $2)}
 
 args:
     | exp args {$2}
@@ -83,10 +83,10 @@ op_exp:
     | exp GTE exp {pp "gte"; A.OpExp($1,A.GTE,$3)}
 
 number_lit:
-    | NUMBER {pp "number"; A.NumExp(111)}
+    | NUMBER {pp "number"; A.NumExp($1)}
     
 identifier_lit:
-    | ID {pp "identifier"; A.IdExp("test")}
+    | ID {pp "identifier"; A.IdExp($1)}
     
 
 // Using F# keywords for nonterminal names is okay.
