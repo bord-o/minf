@@ -3,6 +3,7 @@
 // Opens methods related to fslex.exe
 open FSharp.Text.Lexing
 
+
 let newline (lexbuf: LexBuffer<_>) = 
   lexbuf.StartPos <- lexbuf.StartPos.NextLine
 
@@ -23,9 +24,10 @@ rule tokenstream = parse
 | "is"				{Parser.IS}
 | "fun"				{Parser.FUN}
 | ":"				{Parser.COLON}
-| char(char|digit)?+ { Parser.ID}
 | "="			{ Parser.ASSIGN}
-| int			{ Parser.NUMBER}
+
+| char(char|digit)?+ { Parser.ID(lexeme lexbuf)}
+| int			{ Parser.NUMBER(System.Int32.Parse(lexeme lexbuf))}
 | ";;"			{ Parser.EXPEND}
 
 | "+"			{Parser.PLUS}

@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\test"
   ],
-  "SelectedNode": "\\C:\\Users\\BLittle\\Documents\\GIT\\minf",
+  "SelectedNode": "\\minf.fsproj",
   "PreviewInSolutionExplorer": false
 }

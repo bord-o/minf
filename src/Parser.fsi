@@ -2,9 +2,9 @@
 module Parser
 type token = 
   | EOF
+  | ID of (string)
+  | NUMBER of (int)
   | LET
-  | NUMBER
-  | ID
   | EXPEND
   | ASSIGN
   | OPAREN
@@ -24,9 +24,9 @@ type token =
   | GTE
 type tokenId = 
     | TOKEN_EOF
-    | TOKEN_LET
-    | TOKEN_NUMBER
     | TOKEN_ID
+    | TOKEN_NUMBER
+    | TOKEN_LET
     | TOKEN_EXPEND
     | TOKEN_ASSIGN
     | TOKEN_OPAREN

@@ -6,15 +6,16 @@ module Lexer
 // Opens methods related to fslex.exe
 open FSharp.Text.Lexing
 
+
 let newline (lexbuf: LexBuffer<_>) = 
   lexbuf.StartPos <- lexbuf.StartPos.NextLine
 
 
-# 13 "src/Lexer.fs"
+# 14 "src/Lexer.fs"
 let trans : uint16[] array = 
     [| 
     (* State 0 *)
-     [| 22us;22us;22us;22us;22us;22us;22us;22us;22us;18us;19us;22us;22us;20us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;18us;22us;22us;22us;22us;22us;22us;22us;16us;17us;13us;11us;22us;12us;22us;22us;9us;9us;9us;9us;9us;9us;9us;9us;9us;9us;6us;10us;14us;8us;15us;22us;22us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;7us;22us;22us;22us;22us;22us;22us;7us;7us;7us;7us;4us;5us;7us;7us;2us;7us;7us;1us;7us;7us;7us;7us;7us;7us;7us;3us;7us;7us;7us;7us;7us;7us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;21us;|];
+     [| 22us;22us;22us;22us;22us;22us;22us;22us;22us;18us;19us;22us;22us;20us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;18us;22us;22us;22us;22us;22us;22us;22us;16us;17us;13us;11us;22us;12us;22us;22us;9us;9us;9us;9us;9us;9us;9us;9us;9us;9us;6us;10us;14us;7us;15us;22us;22us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;8us;22us;22us;22us;22us;22us;22us;8us;8us;8us;8us;4us;5us;8us;8us;2us;8us;8us;1us;8us;8us;8us;8us;8us;8us;8us;3us;8us;8us;8us;8us;8us;8us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;22us;21us;|];
     (* State 1 *)
      [| 65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;65535us;65535us;65535us;65535us;65535us;65535us;28us;28us;28us;28us;40us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;|];
     (* State 2 *)
@@ -28,9 +29,9 @@ let trans : uint16[] array =
     (* State 6 *)
      [| 65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;|];
     (* State 7 *)
-     [| 65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;65535us;65535us;65535us;65535us;65535us;65535us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;|];
-    (* State 8 *)
      [| 65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;|];
+    (* State 8 *)
+     [| 65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;65535us;65535us;65535us;65535us;65535us;65535us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;28us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;|];
     (* State 9 *)
      [| 65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;27us;27us;27us;27us;27us;27us;27us;27us;27us;27us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;|];
     (* State 10 *)
@@ -98,131 +99,131 @@ let trans : uint16[] array =
     (* State 41 *)
      [| 65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;65535us;65535us;65535us;65535us;65535us;65535us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;29us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;65535us;|];
     |] 
-let actions : uint16[] = [|65535us;7us;7us;7us;7us;7us;6us;7us;8us;9us;23us;11us;12us;13us;14us;16us;18us;19us;20us;21us;21us;22us;23us;21us;17us;15us;10us;9us;7us;7us;7us;5us;7us;7us;3us;7us;7us;2us;1us;4us;7us;0us;|]
+let actions : uint16[] = [|65535us;8us;8us;8us;8us;8us;6us;7us;8us;9us;23us;11us;12us;13us;14us;16us;18us;19us;20us;21us;21us;22us;23us;21us;17us;15us;10us;9us;8us;8us;8us;5us;8us;8us;3us;8us;8us;2us;1us;4us;8us;0us;|]
 let _fslex_tables = FSharp.Text.Lexing.UnicodeTables.Create(trans,actions)
 let rec _fslex_dummy () = _fslex_dummy() 
 // Rule tokenstream
 and tokenstream  lexbuf =
   match _fslex_tables.Interpret(0,lexbuf) with
   | 0 -> ( 
-# 19 "src/Lexer.fsl"
+# 20 "src/Lexer.fsl"
                            Parser.LET 
-# 110 "src/Lexer.fs"
+# 111 "src/Lexer.fs"
           )
   | 1 -> ( 
-# 20 "src/Lexer.fsl"
+# 21 "src/Lexer.fsl"
                          Parser.IF
-# 115 "src/Lexer.fs"
+# 116 "src/Lexer.fs"
           )
   | 2 -> ( 
-# 21 "src/Lexer.fsl"
+# 22 "src/Lexer.fsl"
                            Parser.THEN
-# 120 "src/Lexer.fs"
+# 121 "src/Lexer.fs"
           )
   | 3 -> ( 
-# 22 "src/Lexer.fsl"
+# 23 "src/Lexer.fsl"
                            Parser.ELSE
-# 125 "src/Lexer.fs"
+# 126 "src/Lexer.fs"
           )
   | 4 -> ( 
-# 23 "src/Lexer.fsl"
+# 24 "src/Lexer.fsl"
                           Parser.IS
-# 130 "src/Lexer.fs"
+# 131 "src/Lexer.fs"
           )
   | 5 -> ( 
-# 24 "src/Lexer.fsl"
+# 25 "src/Lexer.fsl"
                            Parser.FUN
-# 135 "src/Lexer.fs"
+# 136 "src/Lexer.fs"
           )
   | 6 -> ( 
-# 25 "src/Lexer.fsl"
+# 26 "src/Lexer.fsl"
                          Parser.COLON
-# 140 "src/Lexer.fs"
+# 141 "src/Lexer.fs"
           )
   | 7 -> ( 
-# 26 "src/Lexer.fsl"
-                                      Parser.ID
-# 145 "src/Lexer.fs"
-          )
-  | 8 -> ( 
 # 27 "src/Lexer.fsl"
                          Parser.ASSIGN
-# 150 "src/Lexer.fs"
+# 146 "src/Lexer.fs"
+          )
+  | 8 -> ( 
+# 29 "src/Lexer.fsl"
+                                      Parser.ID(tokenstream lexbuf)
+# 151 "src/Lexer.fs"
           )
   | 9 -> ( 
-# 28 "src/Lexer.fsl"
-                         Parser.NUMBER
-# 155 "src/Lexer.fs"
+# 30 "src/Lexer.fsl"
+                         Parser.NUMBER(System.Int32.Parse(tokenstream lexbuf))
+# 156 "src/Lexer.fs"
           )
   | 10 -> ( 
-# 29 "src/Lexer.fsl"
+# 31 "src/Lexer.fsl"
                           Parser.EXPEND
-# 160 "src/Lexer.fs"
+# 161 "src/Lexer.fs"
           )
   | 11 -> ( 
-# 31 "src/Lexer.fsl"
+# 33 "src/Lexer.fsl"
                         Parser.PLUS
-# 165 "src/Lexer.fs"
+# 166 "src/Lexer.fs"
           )
   | 12 -> ( 
-# 32 "src/Lexer.fsl"
+# 34 "src/Lexer.fsl"
                         Parser.MINUS
-# 170 "src/Lexer.fs"
+# 171 "src/Lexer.fs"
           )
   | 13 -> ( 
-# 33 "src/Lexer.fsl"
+# 35 "src/Lexer.fsl"
                         Parser.TIMES
-# 175 "src/Lexer.fs"
+# 176 "src/Lexer.fs"
           )
   | 14 -> ( 
-# 35 "src/Lexer.fsl"
+# 37 "src/Lexer.fsl"
                         Parser.LT
-# 180 "src/Lexer.fs"
+# 181 "src/Lexer.fs"
           )
   | 15 -> ( 
-# 36 "src/Lexer.fsl"
+# 38 "src/Lexer.fsl"
                          Parser.LTE
-# 185 "src/Lexer.fs"
+# 186 "src/Lexer.fs"
           )
   | 16 -> ( 
-# 37 "src/Lexer.fsl"
+# 39 "src/Lexer.fsl"
                         Parser.GT
-# 190 "src/Lexer.fs"
+# 191 "src/Lexer.fs"
           )
   | 17 -> ( 
-# 38 "src/Lexer.fsl"
+# 40 "src/Lexer.fsl"
                          Parser.GTE
-# 195 "src/Lexer.fs"
+# 196 "src/Lexer.fs"
           )
   | 18 -> ( 
-# 40 "src/Lexer.fsl"
+# 42 "src/Lexer.fsl"
                         Parser.OPAREN
-# 200 "src/Lexer.fs"
+# 201 "src/Lexer.fs"
           )
   | 19 -> ( 
-# 41 "src/Lexer.fsl"
+# 43 "src/Lexer.fsl"
                         Parser.CPAREN
-# 205 "src/Lexer.fs"
+# 206 "src/Lexer.fs"
           )
   | 20 -> ( 
-# 43 "src/Lexer.fsl"
+# 45 "src/Lexer.fsl"
                               tokenstream lexbuf 
-# 210 "src/Lexer.fs"
+# 211 "src/Lexer.fs"
           )
   | 21 -> ( 
-# 44 "src/Lexer.fsl"
+# 46 "src/Lexer.fsl"
                            newline lexbuf; tokenstream lexbuf 
-# 215 "src/Lexer.fs"
+# 216 "src/Lexer.fs"
           )
   | 22 -> ( 
-# 45 "src/Lexer.fsl"
+# 47 "src/Lexer.fsl"
                           Parser.EOF 
-# 220 "src/Lexer.fs"
+# 221 "src/Lexer.fs"
           )
   | 23 -> ( 
-# 47 "src/Lexer.fsl"
+# 49 "src/Lexer.fsl"
                           failwith ("ParseError" + LexBuffer<_>.LexemeString lexbuf) 
-# 225 "src/Lexer.fs"
+# 226 "src/Lexer.fs"
           )
   | _ -> failwith "tokenstream"
 

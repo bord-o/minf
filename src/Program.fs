@@ -8,6 +8,7 @@ let parseString text =
     let lexbuf = LexBuffer<char>.FromString text
 
     let ast = Parser.start Lexer.tokenstream lexbuf
+    
     ()
 
     //printfn "countFromParser: result = %d, expected %d" countFromParser expectedCount
