@@ -1,35 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <PackageReference Include="FsLexYacc" Version="11.2.0" />
   </ItemGroup>
-
   <ItemGroup>
-    
-    <FsYacc Include="src/Parser.fsy">
-      <OtherFlags>--module Parser  -o src/Parser.fs</OtherFlags>
+    <FsYacc Include="src/parser/Parser.fsy">
+      <OtherFlags>--module Parser  -o src/parser/Parser.fs</OtherFlags>
     </FsYacc>
-    
-    <FsLex Include="src/Lexer.fsl">
-      <OtherFlags>--module Lexer --unicode -o src/Lexer.fs</OtherFlags>
+    <FsLex Include="src/parser/Lexer.fsl">
+      <OtherFlags>--module Lexer --unicode -o src/parser/Lexer.fs</OtherFlags>
     </FsLex>
-    
   </ItemGroup>
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
-  
   <PropertyGroup>
     <PublishAot>true</PublishAot>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="src/Ast.fs" />
-    <Compile Include="src/Parser.fs" />
-    <Compile Include="src/Lexer.fs" />
+    <Compile Include="src/Interp.fs" />
+    <Compile Include="src/parser/Parser.fs" />
+    <Compile Include="src/parser/Lexer.fs" />
     <Compile Include="src/Program.fs" />
   </ItemGroup>
 </Project>
-

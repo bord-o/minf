@@ -28,7 +28,7 @@ and exp =
     | OpExp of exp * op * exp
     | NumExp of int
     | IfExp of exp * exp * exp
-    | CallExp of id * exp
+    | CallExp of id * exp list
     | IdExp of id
 
 and fundec = 
