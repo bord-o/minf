@@ -2,10 +2,16 @@
 module Parser
 type token = 
   | EOF
-  | HELLO
+  | LET
+  | NUMBER
+  | ID
+  | EXPEND
 type tokenId = 
     | TOKEN_EOF
-    | TOKEN_HELLO
+    | TOKEN_LET
+    | TOKEN_NUMBER
+    | TOKEN_ID
+    | TOKEN_EXPEND
     | TOKEN_end_of_input
     | TOKEN_error
 type nonTerminalId = 
@@ -24,4 +30,4 @@ val prodIdxToNonTerminal: int -> nonTerminalId
 
 /// This function gets the name of a token as a string
 val token_to_string: token -> string
-val start : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> ( int ) 
+val start : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> (unit) 

@@ -1,20 +1,19 @@
 %{
 
-
 %}
 
 // The start token becomes a parser function in the compiled code:
 %start start
 
 // Regular tokens
-%token HELLO
+%token LET NUMBER ID EXPEND
 
 // Misc tokens
 %token EOF
 
 // This is the type of the data produced by a successful reduction of the 'start'
 // symbol:
-%type < int > start
+%type <unit> start
 
 %%
 
@@ -24,9 +23,9 @@ start: File end { $1 }
      | end      { $1 }
 
 File:
-	| HELLO						{ 1 }
-	| HELLO HELLO				{ 2 }
+	| ID File				{printfn "HELLO"; $2}
+	| ID					{printfn "HELLO" } 
 
 
 // Using F# keywords for nonterminal names is okay.
-end: EOF { 3 }
+end: EOF { printfn "EOF" }
