@@ -53,7 +53,6 @@ type nonTerminalId =
     | NONTERM_stm
     | NONTERM_dec
     | NONTERM_fun
-    | NONTERM_fun_args
     | NONTERM_fun_arg
     | NONTERM_exp
     | NONTERM_if_exp

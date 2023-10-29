@@ -1,23 +1,11 @@
 module Ast
 
-type prog = 
-    Prog of stm list    
+type prog =
+    | Prog of stm list
     | Blank
 
-and id = string
-
-and op =
-    Plus
-    | Minus
-    | Times
-    | Eq
-    | LT
-    | LTE
-    | GT
-    | GTE
-
 and stm =
-    Dec of dec
+    | Dec of dec
     | Exp of exp
 
 and dec =
@@ -31,10 +19,25 @@ and exp =
     | CallExp of id * exp list
     | IdExp of id
 
-and fundec = 
-    {name: id; outtype:id; args: funargs; body: exp}
+and id =
+    | Ty of string
+    | Fun of string
+    | Val of string
 
-and funargs = funarg list
+and op =
+    | Plus
+    | Minus
+    | Times
+    | Eq
+    | LT
+    | LTE
+    | GT
+    | GTE
 
-and funarg = 
-    {argname: id; type': id}
+and fundec =
+    { name: id
+      outtype: id
+      arg: funarg
+      body: exp }
+
+and funarg = { argname: id; type': id }

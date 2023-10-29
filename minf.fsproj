@@ -19,6 +19,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="src/Ast.fs" />
+    <Compile Include="src/Type.fs" />
     <Compile Include="src/Interp.fs" />
     <Compile Include="src/parser/Parser.fs" />
     <Compile Include="src/parser/Lexer.fs" />
