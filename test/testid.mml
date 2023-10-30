@@ -1,0 +1,5 @@
+let id =
+  fun f (x : int) : int is
+    x ;;
+
+id 5;;

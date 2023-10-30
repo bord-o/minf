@@ -23,6 +23,8 @@ rule tokenstream = parse
 | "else"			{Parser.ELSE}
 | "is"				{Parser.IS}
 | "fun"				{Parser.FUN}
+| "true"			{Parser.TRUE}
+| "false"			{Parser.FALSE}
 | ":"				{Parser.COLON}
 | "="			{ Parser.ASSIGN}
 

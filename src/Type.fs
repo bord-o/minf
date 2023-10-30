@@ -11,6 +11,6 @@ type abstype =
     | TUnit
     | TFun of abstype * abstype
 
-type result =
+type value =
     | Val of type'
-    | Fun of Ast.id * abstype * abstype // only unary functions
+    | Fun of abstype * Ast.id * abstype * Ast.exp // only unary functions

@@ -22,6 +22,8 @@ type token =
   | GT
   | LTE
   | GTE
+  | TRUE
+  | FALSE
 type tokenId = 
     | TOKEN_EOF
     | TOKEN_ID
@@ -44,6 +46,8 @@ type tokenId =
     | TOKEN_GT
     | TOKEN_LTE
     | TOKEN_GTE
+    | TOKEN_TRUE
+    | TOKEN_FALSE
     | TOKEN_end_of_input
     | TOKEN_error
 type nonTerminalId = 
@@ -57,9 +61,9 @@ type nonTerminalId =
     | NONTERM_exp
     | NONTERM_if_exp
     | NONTERM_call_exp
-    | NONTERM_args
     | NONTERM_op_exp
     | NONTERM_number_lit
+    | NONTERM_bool_lit
     | NONTERM_identifier_lit
     | NONTERM_end
 /// This function maps tokens to integer indexes

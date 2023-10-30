@@ -16,10 +16,12 @@ let parseString text =
 let parseFile (fileName: string) =
     use textReader = new System.IO.StreamReader(fileName)
     let lexbuf = LexBuffer<char>.FromTextReader textReader
+
     printfn "%A" <| lexbuf.ToString()
 
     let ast = Parser.start Lexer.tokenstream lexbuf
     printfn "%A" <| ast.ToString()
+    ignore <| Interp.eval_prog Interp.init_env ast
     ()
 
 //printfn "countFromParser: result = %d, expected %d" countFromParser expectedCount

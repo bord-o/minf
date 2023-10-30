@@ -15,8 +15,9 @@ and dec =
 and exp =
     | OpExp of exp * op * exp
     | NumExp of int
+    | BoolExp of bool
     | IfExp of exp * exp * exp
-    | CallExp of id * exp list
+    | CallExp of id * exp
     | IdExp of id
 
 and id =

@@ -7,14 +7,14 @@ let pp s = printfn s
 %start start
 
 // Regular tokens
-%token LET EXPEND ASSIGN OPAREN CPAREN IF THEN ELSE IS COLON FUN PLUS MINUS TIMES LT GT LTE GTE
+%token LET EXPEND ASSIGN OPAREN CPAREN IF THEN ELSE IS COLON FUN PLUS MINUS TIMES LT GT LTE GTE TRUE FALSE
 %token <int> NUMBER
 %token <string> ID
 
 %left ASSIGN PLUS MINUS TIMES LT GT LTE GTE
 %right IF ID OPAREN NUMBER
 
-%nonassoc IFX FARGS
+%nonassoc IFX 
 
 
 // Misc tokens
@@ -52,6 +52,7 @@ fun_arg:
 exp:
     | OPAREN exp CPAREN {$2}
     | number_lit {$1}
+    | bool_lit {$1}
     | identifier_lit {$1}
     | op_exp {$1}
     | call_exp {$1}
@@ -61,11 +62,7 @@ if_exp:
     | IF exp THEN exp ELSE exp %prec IFX  {pp "if then else"; A.IfExp($2, $4, $6)} 
 
 call_exp:
-    | ID args {pp "function call"; A.CallExp(A.Val($1), $2)}
-
-args:
-    | exp args {$1::$2}
-    | exp %prec FARGS  {$1::[]}
+    | ID exp {pp "function call"; A.CallExp(A.Fun($1), $2)}
 
 op_exp:
     | exp PLUS exp {pp "plus"; A.OpExp($1,A.Plus,$3)} 
@@ -80,6 +77,10 @@ op_exp:
 
 number_lit:
     | NUMBER {pp "number"; A.NumExp($1)}
+
+bool_lit:
+    | TRUE {pp "true"; A.BoolExp(true)}
+    | FALSE {pp "true"; A.BoolExp(false)}
     
 identifier_lit:
     | ID {pp "identifier"; A.IdExp(A.Val($1))}
