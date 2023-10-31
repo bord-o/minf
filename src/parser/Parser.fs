@@ -461,7 +461,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 62 "src/parser/Parser.fsy"
-                                                                pp "if then else"; A.IfExp(_2, _4, _6)
+                                                                 pp "if then else"; A.IfExp(_2, _4, _6)
                    )
 # 62 "src/parser/Parser.fsy"
                  : 'gentype_if_exp));

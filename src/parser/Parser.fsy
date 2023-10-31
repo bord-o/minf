@@ -12,9 +12,9 @@ let pp s = printfn s
 %token <string> ID
 
 %left NEQ ASSIGN PLUS MINUS TIMES LT GT LTE GTE
-%right IF ID OPAREN NUMBER
+%right IF ID OPAREN NUMBER 
 
-%nonassoc IFX
+%nonassoc IFX 
 
 
 // Misc tokens
