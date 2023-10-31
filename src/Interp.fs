@@ -92,6 +92,7 @@ let rec eval_exp env =
         | A.Minus -> T.Int(checkint (eval_exp env e1) - checkint (eval_exp env e2))
         | A.Times -> T.Int(checkint (eval_exp env e1) * checkint (eval_exp env e2))
 
+        | A.Neq -> T.Bool(checkint (eval_exp env e1) <> checkint (eval_exp env e2))
         | A.Eq -> T.Bool(checkint (eval_exp env e1) = checkint (eval_exp env e2))
         | A.LT -> T.Bool(checkint (eval_exp env e1) < checkint (eval_exp env e2))
         | A.LTE -> T.Bool(checkint (eval_exp env e1) <= checkint (eval_exp env e2))
@@ -102,10 +103,11 @@ let rec eval_exp env =
     | A.BoolExp(b) -> T.Bool(b)
 
     | A.IfExp(if', then', else') ->
-        if (checkbool (eval_exp env if')) then
-            (eval_exp env then')
+    //TODO: why is my if eager to call a recursive function in the else branch but not the then branch?
+        if (printfn $"checking if: {if'}"; checkbool (eval_exp env if')) then
+            (printfn $"exec then: {then'}"; eval_exp env then')
         else
-            (eval_exp env else')
+            (printfn "exec else"; eval_exp env else')
     | A.CallExp(name, arg) -> call env name (eval_exp env arg)
     | A.IdExp(name) -> eval_val_id env name
 
@@ -113,8 +115,10 @@ and call (env: env) (funname: A.id) (arg: T.type') =
     // find the local arg name of the function's exp, then bind the passed arg
     // to the local env that this function uses. Evaluate that exp and return the unchanged environment.
     // TODO type check this stuff
-    printfn "Callable functions: %A" env.functions
-    printfn "looking up function: %A" funname
+    //printfn "Callable functions: %A" env.functions
+    //printfn "looking up function: %A" funname
+    printfn $"Calling {funname} with {arg}"
+    //printfn $"Vars: {env.variables}"
 
     let arg_name, body = 
         match env.functions.TryFind funname with

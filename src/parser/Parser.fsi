@@ -24,6 +24,7 @@ type token =
   | GTE
   | TRUE
   | FALSE
+  | NEQ
 type tokenId = 
     | TOKEN_EOF
     | TOKEN_ID
@@ -48,6 +49,7 @@ type tokenId =
     | TOKEN_GTE
     | TOKEN_TRUE
     | TOKEN_FALSE
+    | TOKEN_NEQ
     | TOKEN_end_of_input
     | TOKEN_error
 type nonTerminalId = 

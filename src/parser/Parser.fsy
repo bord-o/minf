@@ -7,14 +7,14 @@ let pp s = printfn s
 %start start
 
 // Regular tokens
-%token LET EXPEND ASSIGN OPAREN CPAREN IF THEN ELSE IS COLON FUN PLUS MINUS TIMES LT GT LTE GTE TRUE FALSE
+%token LET EXPEND ASSIGN OPAREN CPAREN IF THEN ELSE IS COLON FUN PLUS MINUS TIMES LT GT LTE GTE TRUE FALSE NEQ
 %token <int> NUMBER
 %token <string> ID
 
-%left ASSIGN PLUS MINUS TIMES LT GT LTE GTE
+%left NEQ ASSIGN PLUS MINUS TIMES LT GT LTE GTE
 %right IF ID OPAREN NUMBER
 
-%nonassoc IFX 
+%nonassoc IFX
 
 
 // Misc tokens
@@ -70,6 +70,7 @@ op_exp:
     | exp TIMES exp {pp "times"; A.OpExp($1,A.Times,$3)}
 
     | exp ASSIGN exp {pp "equals"; A.OpExp($1,A.Eq,$3)}
+    | exp NEQ exp {pp "neq"; A.OpExp($1, A.Neq, $3)}
     | exp LT exp {pp "lt"; A.OpExp($1,A.LT,$3)}
     | exp LTE exp {pp "lte"; A.OpExp($1,A.LTE,$3)}
     | exp GT exp {pp "gt"; A.OpExp($1,A.GT,$3)}

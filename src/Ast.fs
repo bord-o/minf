@@ -30,6 +30,7 @@ and op =
     | Minus
     | Times
     | Eq
+    | Neq
     | LT
     | LTE
     | GT

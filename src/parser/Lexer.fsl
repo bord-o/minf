@@ -36,6 +36,7 @@ rule tokenstream = parse
 | "-"			{Parser.MINUS}
 | "*"			{Parser.TIMES}
 
+| "!="			{Parser.NEQ}
 | "<"			{Parser.LT}
 | "<="			{Parser.LTE}
 | ">"			{Parser.GT}
