@@ -37,8 +37,7 @@ and op =
     | GTE
 
 and fundec =
-    { name: id
-      outtype: id
+    { outtype: id
       arg: funarg
       body: exp }
 

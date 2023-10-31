@@ -21,7 +21,7 @@ rule tokenstream = parse
 | "if"			{Parser.IF}
 | "then"			{Parser.THEN}
 | "else"			{Parser.ELSE}
-| "is"				{Parser.IS}
+| "=>"				{Parser.IS}
 | "fun"				{Parser.FUN}
 | "true"			{Parser.TRUE}
 | "false"			{Parser.FALSE}

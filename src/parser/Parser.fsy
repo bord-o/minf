@@ -44,7 +44,7 @@ dec:
     | LET ID ASSIGN fun {pp "fun"; A.FunDec(A.Fun($2), $4)}
 
 fun:
-    | FUN ID OPAREN fun_arg CPAREN COLON ID IS exp  {pp "fun declaration"; {name=A.Fun($2); outtype=A.Ty($7); arg= $4; body= $9} }
+    | FUN OPAREN fun_arg CPAREN COLON ID IS exp  {pp "fun declaration"; {outtype=A.Ty($6); arg= $3; body= $8} }
 
 fun_arg:
     | ID COLON ID {pp "funarg"; {argname=A.Val($1); type'=A.Ty($3)}}

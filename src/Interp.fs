@@ -142,8 +142,7 @@ let eval_dec env =
         // easy to make function type from this (type list) but how do we call it?
         // make the type returned be abstract
         // TODO make recursive functions work
-        let { A.name = name
-              A.outtype = outtype
+        let { A.outtype = outtype
               A.arg = { A.argname = argname; A.type' = intype }
               A.body = body } =
             fundec
