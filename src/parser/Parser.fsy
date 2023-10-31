@@ -1,6 +1,6 @@
 %{
 module A = Ast
-let pp s = printfn s
+let pp s = ignore s
 %}
 
 // The start token becomes a parser function in the compiled code:
@@ -88,4 +88,4 @@ identifier_lit:
     
 
 // Using F# keywords for nonterminal names is okay.
-end: EOF { printfn "EOF"}
+end: EOF { }

@@ -6,7 +6,7 @@ open FSharp.Text.Parsing.ParseHelpers
 # 1 "src/parser/Parser.fsy"
 
 module A = Ast
-let pp s = printfn s
+let pp s = ignore s
 
 # 11 "src/parser/Parser.fs"
 // This type is the type of tokens accepted by the parser
@@ -632,7 +632,7 @@ let _fsyacc_reductions = lazy [|
                 (
                    (
 # 91 "src/parser/Parser.fsy"
-                                printfn "EOF"
+                                
                    )
 # 91 "src/parser/Parser.fsy"
                  : 'gentype_end));

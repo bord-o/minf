@@ -104,10 +104,10 @@ let rec eval_exp env =
 
     | A.IfExp(if', then', else') ->
     //TODO: why is my if eager to call a recursive function in the else branch but not the then branch?
-        if (printfn $"checking if: {if'}"; checkbool (eval_exp env if')) then
-            (printfn $"exec then: {then'}"; eval_exp env then')
+        if (checkbool (eval_exp env if')) then
+            (eval_exp env then')
         else
-            (printfn "exec else"; eval_exp env else')
+            (eval_exp env else')
     | A.CallExp(name, arg) -> call env name (eval_exp env arg)
     | A.IdExp(name) -> eval_val_id env name
 
@@ -117,7 +117,7 @@ and call (env: env) (funname: A.id) (arg: T.type') =
     // TODO type check this stuff
     //printfn "Callable functions: %A" env.functions
     //printfn "looking up function: %A" funname
-    printfn $"Calling {funname} with {arg}"
+    //printfn $"Calling {funname} with {arg}"
     //printfn $"Vars: {env.variables}"
 
     let arg_name, body = 
@@ -175,9 +175,9 @@ let eval_prog env =
             match (eval_stm env stm) with
             | (res, new_env) ->
                 printfn "Result: %A" res
-                printfn "Vars: %A" new_env.variables
-                printfn "Tys: %A" new_env.types
-                printfn "Funs: %A" new_env.functions
+                //printfn "Vars: %A" new_env.variables
+                //printfn "Tys: %A" new_env.types
+                //printfn "Funs: %A" new_env.functions
                 new_env
 
         List.fold update_env env stms

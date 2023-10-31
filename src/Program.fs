@@ -17,7 +17,7 @@ let parseFile (fileName: string) =
     use textReader = new System.IO.StreamReader(fileName)
     let lexbuf = LexBuffer<char>.FromTextReader textReader
 
-    printfn "%A" <| lexbuf.ToString()
+    //printfn "%A" <| lexbuf.ToString()
 
     let ast = Parser.start Lexer.tokenstream lexbuf
     printfn "%A" <| ast.ToString()
