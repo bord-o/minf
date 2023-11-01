@@ -11,10 +11,12 @@ let pp s = ignore s
 %token <int> NUMBER
 %token <string> ID
 
-%left NEQ ASSIGN PLUS MINUS TIMES LT GT LTE GTE
-%right IF ID OPAREN NUMBER 
+%left ELSE
+%left NEQ PLUS MINUS TIMES LT GT LTE GTE 
+%right IF ASSIGN ID OPAREN NUMBER
 
-%nonassoc IFX 
+
+
 
 
 // Misc tokens
@@ -59,7 +61,7 @@ exp:
     | if_exp {$1}
 
 if_exp:
-    | IF exp THEN exp ELSE exp %prec IFX  {pp "if then else"; A.IfExp($2, $4, $6)} 
+    | IF exp THEN exp ELSE exp {pp "if then else"; A.IfExp($2, $4, $6)} 
 
 call_exp:
     | ID exp {pp "function call"; A.CallExp(A.Fun($1), $2)}
