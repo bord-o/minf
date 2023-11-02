@@ -1,9 +1,4 @@
-let fact =
-  fn (n : int) : int =>
-    if n=0 then 1 else n * fact (n-1) ;;
-
-let fib =
-    fn (n:int) : int =>
-        (if n = 0 then 0 else if n = 1 then 1 else fib (n-2) + fib (n-1));;
-
-fib 33;;
+let test =
+	fn (x: int) : int =>
+		x + 99;;
+test 1;;

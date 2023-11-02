@@ -1,24 +1,36 @@
 # Notes
 
-- Goal = support function recursion
+"Prog
+  [Dec
+     (FunDec (Fun "test", { outtype = Ty "int"
+                            arg = { argname = Val "x"
+                                    type' = Ty "int" }
+                            body = OpExp (IdExp (Val "x"), Plus, NumExp 99) }));
+   Exp (CallExp (Fun "test", NumExp 1))]"
+
+Result: Unit
+Result: Int 100
+
+
 
 Prog
   [Dec
      (FunDec
-        (Fun "fact",
-         { name = Fun "f"
-           outtype = Ty "int"
+        (Fun "fib",
+         { outtype = Ty "int"
            arg = { argname = Val "n"
                    type' = Ty "int" }
            body =
-            OpExp
-              (IfExp
-                 (OpExp (IdExp (Val "n"), Eq, NumExp 0), NumExp 1,
-                  IdExp (Val "n")), Times,
-               CallExp (Fun "f", OpExp (IdExp (Val "n"), Minus, NumExp 1))) }));
-   Exp (CallExp (Fun "fact", NumExp 10))]
-
-- how do we not get "function not found" when executing the body?
-    - we need the function to be entered into the env by the time it gets to the recursive call
-
-
+            IfExp
+              (OpExp (IdExp (Val "n"), Eq, NumExp 0), NumExp 0,
+               IfExp
+                 (OpExp (IdExp (Val "n"), Eq, NumExp 1), NumExp 1,
+                  OpExp
+                    (CallExp
+                       (Fun "fib", OpExp (IdExp (Val "n"), Minus, NumExp 2)),
+                     Plus,
+                     CallExp
+                       (Fun "fib", OpExp (IdExp (Val "n"), Minus, NumExp 1))))) }));
+   Exp (CallExp (Fun "fib", NumExp 10))]
+Result: Unit
+Result: Int 55
