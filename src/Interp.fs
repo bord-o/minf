@@ -31,12 +31,9 @@ let eval_ty_id env =
     function
     | A.Ty(name) ->
         let tytable = env.types
-        let res = tytable.TryFind(A.Ty name)
-
-        if Option.isNone res then
-            failwith "Type not bound"
-        else
-            res.Value
+        match tytable.TryFind(A.Ty name) with
+        | Some res -> res
+        | None -> failwith "fun not bound"
     | _ -> failwith "expected type"
 
 //eval_fun_id -> value (Fun)
@@ -44,12 +41,9 @@ let eval_fun_id env =
     function
     | A.Fun(name) ->
         let funtable = env.functions
-        let res = funtable.TryFind(A.Fun name)
-
-        if Option.isNone res then
-            failwith "fun not bound"
-        else
-            res.Value
+        match funtable.TryFind(A.Fun name) with
+        | Some res -> printfn $"found fun: {res}"; res
+        | None -> failwith "fun not bound"
     | _ -> failwith "Expected fun"
 
 //eval_val_id -> type'
@@ -124,7 +118,9 @@ and call (env: env) (funname: A.id) (arg: T.type') =
         match env.functions.TryFind funname with
         | Some(fun') ->
             match fun' with
-            | T.Fun (in', arg, out', body) -> (arg, body) 
+            | T.Fun (in', arg, out', body) -> 
+                //printfn $"Found fun: {funname} : {in'} -> {out'}"; 
+                (arg, body) 
             | _ -> failwith "Expected function, not value/type"
         | None -> failwith "Function not found"
 
