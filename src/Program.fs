@@ -21,6 +21,8 @@ let parseFile (fileName: string) =
 
     let ast = Parser.start Lexer.tokenstream lexbuf
     printfn "%A" <| ast.ToString()
+    printfn "%A" <| CILTest.cilStackIterativeFactorial.Invoke 11
+    ignore <| CecilTest.make_app ()
     ignore <| Interp.eval_prog Interp.init_env ast
     ()
 
