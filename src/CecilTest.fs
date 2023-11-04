@@ -1,5 +1,4 @@
 module CecilTest
-
 open System
 open Mono.Cecil
 open Mono.Cecil.Cil
@@ -10,6 +9,7 @@ let make_app () =
             new AssemblyNameDefinition("HelloWorld", new Version(1, 0, 0, 0)), "HelloWorld", ModuleKind.Console)
 
     let module_ = myHelloWorldApp.MainModule
+    printfn "%A" <| module_.Runtime.ToString() //currently evaluates to: "Net_4_0" 
 
     // create the program type and add it to the module
     let programType = 
@@ -54,7 +54,7 @@ let make_app () =
     let ilm = mainMethod.Body.GetILProcessor()
 
     ilm.Append(il.Create(OpCodes.Nop))
-    ilm.Append(il.Create(OpCodes.Ldstr, "Hello World"))
+    ilm.Append(il.Create(OpCodes.Ldstr, "code generation woohoo"))
 
     let writeLineMethod = 
         ilm.Create(OpCodes.Call,
@@ -70,5 +70,5 @@ let make_app () =
     printfn "creating main method"
     myHelloWorldApp.EntryPoint <- mainMethod
     printfn "Saving..."
-    myHelloWorldApp.Write("Test.exe")
+    myHelloWorldApp.Write("Main.dll")
 

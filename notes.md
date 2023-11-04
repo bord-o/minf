@@ -1,5 +1,26 @@
 # Notes
 
+## Questions
+- Is Cecil generating 32 bit code?
+
+## Packaging
+- Just bring a copy of the runtime 
+  + small
+  + simple
+  + no MS deps outside of the runtime
+  - User sees folder with runtime, runtime config, dll, and script to run (this can be hidden through CLI)
+  
+
+
+- Wrap the entire SDK
+  + More functionality
+  + User sees one executable
+  - Slower (needs to run both my compiler, and the f#/c# compiler to wrap the generated assembly)
+  - more bloat
+  - MS dependency
+  - MS error messages shown to user
+
+### Test Asts
 "Prog
   [Dec
      (FunDec (Fun "test", { outtype = Ty "int"
