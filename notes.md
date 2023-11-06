@@ -55,3 +55,51 @@ Prog
    Exp (CallExp (Fun "fib", NumExp 10))]
 Result: Unit
 Result: Int 55
+
+
+// compiling this...
+Exp (CallExp (Fun "test", NumExp 1));
+Exp
+ (OpExp
+	(OpExp (OpExp (NumExp 1, Plus, NumExp 2), Plus, NumExp 3), Plus,
+	 NumExp 4))]"
+
+// evaluating an int expression should leave an int at the top of the stack
+eval (1+2+3) + 4
+
+eval (1+2) + 3
+
+eval 1 + 2
+    ld 1
+    ld 2
+    add
+
+eval + 3
+    ld 3
+    add
+
+eval + 4
+    ld 4
+    add
+
+// compile this...
+Exp (IfExp (BoolExp true, NumExp 99, NumExp 11))]
+
+create "else" ld 11
+create "end" nop
+
+ld 1
+brfalse else
+
+stloc0 99
+br end
+
+else:
+stloc0 11
+br end
+
+end:
+ldloc0
+
+
+

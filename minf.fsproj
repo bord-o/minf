@@ -26,9 +26,8 @@
     <Compile Include="src/Interp.fs" />
     <Compile Include="src/parser/Parser.fs" />
     <Compile Include="src/parser/Lexer.fs" />
-    <Compile Include="src/Emit.fs" />
-    <Compile Include="src/CILTest.fs" />
-    <Compile Include="src/CecilTest.fs" />
+    <Compile Include="src/CIL.fs" />
+    <Compile Include="src/CodeGen.fs" />
     <Compile Include="src/Program.fs" />
   </ItemGroup>
 </Project>
