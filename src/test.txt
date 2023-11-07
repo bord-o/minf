@@ -1,3 +1,1 @@
-1+2+3+4;;
-
-if true then 99 else 11;;
+if 9 <= 10 then 99 else 11;;

@@ -1,10 +1,23 @@
 module CodeGen
+open Mono.Cecil.Cil
 
 module A = Ast
 module T = Type
+module C = CIL
 
+// This module will call out to the CIL module for all il generation functions
+
+
+module Locals =
+    type t = (string * string) list
+    let empty : t = []
+    let get table search = 
+        List.find (fun (k, v) ->  k = search) table |> snd
+    let enter k v table =
+        (k,v)::table
 
 let rec eval_exp =
+    // this function needs access to the the ilGenerator for the containing method
     function
     | A.OpExp(e1, op, e2) ->
         match op with
@@ -19,18 +32,60 @@ let rec eval_exp =
         | A.Minus -> 
             eval_exp e1
             eval_exp e2
-            printfn "add"
+            printfn "sub"
         | A.Times -> 
             eval_exp e1
             eval_exp e2
-            printfn "add"
+            printfn "mul"
 
-        | A.Neq -> printfn "unimplemented"
-        | A.Eq -> printfn "unimplemented"
-        | A.LT -> printfn "unimplemented"
-        | A.LTE -> printfn "unimplemented"
-        | A.GT -> printfn "unimplemented"
-        | A.GTE -> printfn "unimplemented"
+        | A.Neq -> 
+            eval_exp e1
+            eval_exp e2
+            printfn "ceq" // 1 if equal
+            printfn "ldc_I4 0"
+            printfn "ceq"
+        | A.Eq -> 
+            eval_exp e1
+            eval_exp e2
+            printfn "ceq" // 1 if equal
+        | A.LT -> 
+            eval_exp e1
+            eval_exp e2
+            printfn "clt" 
+        | A.LTE -> 
+            eval_exp e1
+            printfn "stloc 0" //store left operand
+            eval_exp e2
+            printfn "stloc 1" //store right operand
+            printfn "ldloc 0" //load both operands
+            printfn "ldloc 1"
+            printfn "clt"  //compare less than (leaves comparison on stack)
+            printfn "ldloc 0"
+            printfn "ldloc 1"
+            printfn "ceq"  //compare equal (leaves comparison on stack)
+            // need the top of the stack to be 1,1
+            printfn "ldc_I4 1"
+            printfn "ceq" //make sure that both comparisons were positive 
+            printfn "ceq" 
+        | A.GT -> 
+            eval_exp e1
+            eval_exp e2
+            printfn "clt" 
+        | A.GTE -> 
+            eval_exp e1
+            printfn "stloc 0" //store left operand
+            eval_exp e2
+            printfn "stloc 1" //store right operand
+            printfn "ldloc 0" //load both operands
+            printfn "ldloc 1"
+            printfn "cgt"  //compare less than (leaves comparison on stack)
+            printfn "ldloc 0"
+            printfn "ldloc 1"
+            printfn "ceq"  //compare equal (leaves comparison on stack)
+            // need the top of the stack to be 1,1
+            printfn "ldc_I4 1"
+            printfn "ceq" //make sure that both comparisons were positive 
+            printfn "ceq" 
 
     | A.NumExp(i) -> 
         printfn $"ldc_I4 {i}"
@@ -38,16 +93,38 @@ let rec eval_exp =
         printfn $"ldc_I4 {if b then 1 else 0}"
 
     | A.IfExp(if', then', else') -> 
-        printfn $"making label else: {eval_exp else'}"
+        // to simply compile a conditional, we create a label(instruction) for the else branch 
+        // and the end. The end instruction doesn't return, it just leaves the result of the expression 
+        // at the top of the stack
+        // we can use a small assoc list for the labeled opcodes
+        let labels = 
+            Locals.empty
+            |> Locals.enter "else" "nop"
+            |> Locals.enter "end" "nop"
 
-        printfn $"brfalse {eval_exp if'} else" //bool
+        printfn $"making label else: {eval_exp else'}" // let lables = ("else", il.Create(Nop))::labels
+        printfn $"making label end: ldloc 1" // let lables = ("end", il.Create(Ldloc, 1))::labels
+
+        printfn $"{eval_exp if'}"
+        printfn $"brfalse  else" //bool
+
         printfn $"{eval_exp then'}"
-        printfn $"else: {eval_exp else'}"
+        printfn $"stloc 1"
+        printfn $"br end"
+
+        printfn "%s" <| Locals.get labels "else"
+        printfn $"{eval_exp else'}"
+        printfn $"stloc 1"
+        printfn $"br end"
+
+        printfn "%s" <| Locals.get labels "end"
+        printfn $"ldloc 1"
 
     | A.CallExp(name, arg) -> printfn "unimplemented" 
-    | A.IdExp(name) ->printfn "unimplemented" 
+    | A.IdExp(name) -> printfn "unimplemented" 
 
-let eval_dec env =
+let eval_dec =
+    // this function needs access to the main class's ilGenerator
     function
     | A.FunDec(binding, fundec) -> // makeFunc at the top level
         // easy to make function type from this (type list) but how do we call it?
@@ -62,9 +139,6 @@ let eval_dec env =
 
     | A.VarDec(binding, value) -> // stloc at the top level
         // associate the binding with the result of this exp in the env
-        let res = eval_exp env value
-        let update = Map.add binding (T.Val(res)) env.variables
-        let new_env = { env with variables = update }
 
         printfn "not implemented"
 
