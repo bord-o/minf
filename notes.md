@@ -3,6 +3,16 @@
 ## Questions
 - Is Cecil generating 32 bit code?
 
+## CodeGen
+- Var dec
+  - compile this as 
+- Fun dec
+
+## Mono?
+- Can AOT compile everything
+- Much smaller runtime
+- more easily cross platform
+
 ## Packaging
 - Just bring a copy of the runtime 
   + small
