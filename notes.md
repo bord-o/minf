@@ -1,36 +1,55 @@
 # Notes
 
 ## Questions
-- Is Cecil generating 32 bit code?
+- how are locals initialized in mono cecil?
+- how are they named?
 
 ## CodeGen
+
 - Var dec
   - compile this as 
+    - a private on the program type (root object) 
+      - this seems the most straightforward, using stfld and ldfld
+      - a variable reference would then be
+
+          ldarg.0 // a reference to the programObj
+          ldfld int32 C::global_name // load the global to the stack
+
+      - a variable declaration would then be
+
+          ldc.i4.0 //load the value
+          stfld int32 C::global_name // store the value of type t in the program obj
+          // the rest of the constructor call
+
+    - a property on the program type (get set)
+    - a set of instructions to load the value at the reference site
+    - locals will probably use an instruction table
 - Fun dec
 
 ## Mono?
+
 - Can AOT compile everything
 - Much smaller runtime
 - more easily cross platform
 
 ## Packaging
-- Just bring a copy of the runtime 
-  + small
-  + simple
-  + no MS deps outside of the runtime
+
+- Just bring a copy of the runtime
+  - small
+  - simple
+  - no MS deps outside of the runtime
   - User sees folder with runtime, runtime config, dll, and script to run (this can be hidden through CLI)
   
-
-
 - Wrap the entire SDK
-  + More functionality
-  + User sees one executable
+  - More functionality
+  - User sees one executable
   - Slower (needs to run both my compiler, and the f#/c# compiler to wrap the generated assembly)
   - more bloat
   - MS dependency
   - MS error messages shown to user
 
 ### Test Asts
+
 "Prog
   [Dec
      (FunDec (Fun "test", { outtype = Ty "int"
@@ -41,8 +60,6 @@
 
 Result: Unit
 Result: Int 100
-
-
 
 Prog
   [Dec
@@ -66,13 +83,12 @@ Prog
 Result: Unit
 Result: Int 55
 
-
 // compiling this...
 Exp (CallExp (Fun "test", NumExp 1));
 Exp
  (OpExp
-	(OpExp (OpExp (NumExp 1, Plus, NumExp 2), Plus, NumExp 3), Plus,
-	 NumExp 4))]"
+ (OpExp (OpExp (NumExp 1, Plus, NumExp 2), Plus, NumExp 3), Plus,
+  NumExp 4))]"
 
 // evaluating an int expression should leave an int at the top of the stack
 eval (1+2+3) + 4
@@ -110,6 +126,3 @@ br end
 
 end:
 ldloc0
-
-
-
