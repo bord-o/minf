@@ -126,3 +126,27 @@ br end
 
 end:
 ldloc0
+
+```cs
+ public class Runtime
+    {
+
+        public static void Entry(string assemblyName=@"C:\Users\BLittle\Documents\GIT\AssemSaveTest\Main.dll")
+        {
+            Assembly assm = Assembly.LoadFrom(assemblyName);
+            var prog = assm.ExportedTypes.First(); // we only have one root type (program type)
+            foreach (var m in prog.GetMethods())
+            {
+                if (m.Name == "Main") // find main
+                {
+                    Console.WriteLine(m.Name);
+                    foreach(var p in m.GetParameters()) { Console.WriteLine($"\t{p}"); }
+                    Console.WriteLine( m.ReturnParameter);
+                    var res = m.Invoke(Activator.CreateInstance(prog), new object[]{ 9}); // here we will eventually pass through the cmdln args
+                    Console.WriteLine(res);
+                }
+            }
+        }
+    }
+
+```
