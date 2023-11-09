@@ -62,6 +62,13 @@ let programType =
 appModule.Types.Add(programType)
 let get_func n = func n programType
 
+// get any other assemblies
+let mscorlib = ModuleDefinition.ReadModule(@"C:\Users\BLittle\Documents\GIT\minf\gen\dotnet-runtime-7.0.13-win-x64\shared\Microsoft.NETCore.App\7.0.13\System.Private.CoreLib.dll")
+let msConsole = ModuleDefinition.ReadModule(@"C:\Users\BLittle\Documents\GIT\minf\gen\dotnet-runtime-7.0.13-win-x64\shared\Microsoft.NETCore.App\7.0.13\System.Console.dll")
+printfn "%A" <| mscorlib.GetType("System.String")
+// for t in mscorlib.MTypes do
+//     printfn "%A" <| t.ToString()
+
 // add an empty constructor for the program type
 let ProgramCtor =
     new MethodDefinition(
@@ -76,7 +83,8 @@ let ProgramCtor =
 // create the constructor's method body
 let ProgramCtorIl = ProgramCtor.Body.GetILProcessor()
 ProgramCtorIl.Emit(OpCodes.Ldarg_0)
-ProgramCtorIl.Emit(OpCodes.Call, appModule.ImportReference(typeof<obj>.GetConstructor([||])))
+let objectCtor = mscorlib.GetType("System.Object").Methods.Where(fun m -> m.IsConstructor &&  not m.HasParameters).First()
+ProgramCtorIl.Emit(OpCodes.Call, appModule.ImportReference(objectCtor))
 ProgramCtorIl.Emit(OpCodes.Nop)
 ProgramCtorIl.Emit(OpCodes.Ret)
 programType.Methods.Add(ProgramCtor)
@@ -96,15 +104,25 @@ add9Il.Emit(OpCodes.Ret)
 
 //-------------------------------------------------------------------------
 // define the 'Main' method and add it to 'Program'
+let str = mscorlib.GetType("System.String")
+let stringArray = new ArrayType(str)
+let console = msConsole.GetType("System.Console")
+printfn "%A" console
+for m in console.Methods.Where(fun m -> m.Name = "WriteLine" && m.Parameters.Count = 1 && m.Parameters[0].ParameterType = msConsole.TypeSystem.String) do
+    printfn "%A" <| m.Name
+    printfn "%A" <| m.Parameters.First()
+
+let wrtln =  console.Methods.Where(fun m -> m.Name = "WriteLine" && m.Parameters.Count = 1 && m.Parameters[0].ParameterType = msConsole.TypeSystem.String).First()
+
 let mainMethod =
-    makeFunc "Main" (appModule.ImportReference typeof<string[]>) appModule.TypeSystem.Int32 programType
+    makeFunc "Main" (appModule.ImportReference stringArray) appModule.TypeSystem.Int32 programType
 
 // start defining the method body
 let mainIl = mainMethod.Body.GetILProcessor()
 mainIl.Emit(OpCodes.Nop)
 mainIl.Emit(OpCodes.Ldstr, "generic method creation woohoo")
 // call the method
-mainIl.Emit(OpCodes.Call, appModule.ImportReference(typeof<Console>.GetMethod("WriteLine", [| typeof<string> |])))
+mainIl.Emit(OpCodes.Call, appModule.ImportReference(wrtln))
 mainIl.Emit(OpCodes.Ldc_I4, 10)
 mainIl.Emit(OpCodes.Call, appModule.ImportReference(get_func "add9"))
 endIl mainIl
