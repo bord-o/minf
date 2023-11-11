@@ -21,9 +21,9 @@ let parseFile (fileName: string) =
 
     let ast = Parser.start Lexer.tokenstream lexbuf
     printfn "%A" <| ast.ToString()
-    ignore <| CIL.make_test_app ()
     ignore <| Interp.eval_prog Interp.init_env ast
     ignore <| CodeGen.eval_prog ast
+    ignore <| Emit.createDll ()
     ()
 
 //printfn "countFromParser: result = %d, expected %d" countFromParser expectedCount

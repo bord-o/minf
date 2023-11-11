@@ -2,8 +2,10 @@
   <ItemGroup>
     <PackageReference Include="FsLexYacc" Version="11.2.0" />
     <PackageReference Include="LicenseToCIL" Version="1.0.0" />
+    <PackageReference Include="Lokad.ILPack" Version="0.2.0" />
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
     <PackageReference Include="System.Reflection" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
     <FsYacc Include="src/parser/Parser.fsy">
@@ -26,7 +28,7 @@
     <Compile Include="src/Interp.fs" />
     <Compile Include="src/parser/Parser.fs" />
     <Compile Include="src/parser/Lexer.fs" />
-    <Compile Include="src/CIL.fs" />
+    <Compile Include="src/Emit.fs" />
     <Compile Include="src/CodeGen.fs" />
     <Compile Include="src/Program.fs" />
   </ItemGroup>

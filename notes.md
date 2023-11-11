@@ -130,13 +130,12 @@ ldloc0
 ```cs
  public class Runtime
     {
-
         public static void Entry(string assemblyName=@"C:\Users\BLittle\Documents\GIT\AssemSaveTest\Main.dll")
         {
             Assembly assm = Assembly.LoadFrom(assemblyName);
             var prog = assm.ExportedTypes.First(); // we only have one root type (program type)
             foreach (var m in prog.GetMethods())
-            {
+            
                 if (m.Name == "Main") // find main
                 {
                     Console.WriteLine(m.Name);

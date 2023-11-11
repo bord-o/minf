@@ -4,7 +4,6 @@ open Mono.Cecil.Cil
 
 module A = Ast
 module T = Type
-module C = CIL
 
 // This module will call out to the CIL module for all il generation functions
 
