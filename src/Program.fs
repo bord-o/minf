@@ -22,9 +22,9 @@ let parseFile (fileName: string) =
     let ast = Parser.start Lexer.tokenstream lexbuf
     printfn "%A" <| ast.ToString()
     ignore <| Interp.eval_prog Interp.init_env ast
-    ignore <| CodeGen.eval_prog ast
-    ignore <| Emit.createDll ()
-    ()
+    let asm =  CodeGen.eval_prog ast
+    Emit.createDll asm "/home/bordo/minf/gen/Gen.dll"
+
 
 //printfn "countFromParser: result = %d, expected %d" countFromParser expectedCount
 
@@ -34,6 +34,3 @@ let parseFile (fileName: string) =
 let testFile = Path.Combine(__SOURCE_DIRECTORY__, "test.txt")
 //File.WriteAllText(testFile, "hello hello")
 parseFile testFile
-
-printfn "Press any key to continue..."
-System.Console.ReadLine() |> ignore

@@ -23,13 +23,14 @@ let entrypoint f =
     let mutable res = new obj()
     for m in prog.GetMethods() do
         if m.Name = "Main" then // find main
-            Console.WriteLine(m.Name)
-            Seq.iter (printfn "%A") <| m.GetParameters() 
-            Console.WriteLine( m.ReturnParameter)
+            printfn "Found main"
+            //Console.WriteLine(m.Name)
+            //Seq.iter (printfn "%A") <| m.GetParameters() 
+            //Console.WriteLine( m.ReturnParameter)
             res <- m.Invoke(Activator.CreateInstance(prog), [||]); // here we will eventually pass through the cmdln args
             Console.WriteLine(res)
 
-    if File.Exists filename then File.Delete filename
+    // if File.Exists filename then File.Delete filename
     Convert.ToInt32(res)
 
 [<EntryPoint>]

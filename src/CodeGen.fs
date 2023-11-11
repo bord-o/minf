@@ -1,9 +1,11 @@
 module CodeGen
-
-open Mono.Cecil.Cil
+open System.Reflection.Emit
+open LicenseToCIL
+open LicenseToCIL.Ops
 
 module A = Ast
 module T = Type
+module E = Emit
 
 // This module will call out to the CIL module for all il generation functions
 
@@ -17,46 +19,49 @@ module Locals =
 
     let enter k v table = (k, v) :: table
 
-let rec eval_exp =
+let rec eval_exp node (env : E.env)=
     // this function needs access to the the ilGenerator for the containing method
-    function
+    let eval_exp' e = eval_exp e env
+    match node with
     | A.OpExp(e1, op, e2) ->
         match op with
-
-        // emit ldc_I4 (eval_exp env e1)
-        // emit ldc_I4 (eval_exp env e2)
+        // emit ldc_I4 (eval_exp' env e1)
+        // emit ldc_I4 (eval_exp' env e2)
         // emit add
         | A.Plus ->
-            eval_exp e1
-            eval_exp e2
+            eval_exp' e1
+            eval_exp' e2
+            env.main.Emit(OpCodes.Add)
             printfn "add"
         | A.Minus ->
-            eval_exp e1
-            eval_exp e2
+            eval_exp' e1
+            eval_exp' e2
+            env.main.Emit(OpCodes.Sub)
             printfn "sub"
         | A.Times ->
-            eval_exp e1
-            eval_exp e2
+            eval_exp' e1
+            eval_exp' e2
+            env.main.Emit(OpCodes.Mul)
             printfn "mul"
 
         | A.Neq ->
-            eval_exp e1
-            eval_exp e2
+            eval_exp' e1
+            eval_exp' e2
             printfn "ceq" // 1 if equal
             printfn "ldc_I4 0"
             printfn "ceq"
         | A.Eq ->
-            eval_exp e1
-            eval_exp e2
+            eval_exp' e1
+            eval_exp' e2
             printfn "ceq" // 1 if equal
         | A.LT ->
-            eval_exp e1
-            eval_exp e2
+            eval_exp' e1
+            eval_exp' e2
             printfn "clt"
         | A.LTE ->
-            eval_exp e1
+            eval_exp' e1
             printfn "stloc 0" //store left operand
-            eval_exp e2
+            eval_exp' e2
             printfn "stloc 1" //store right operand
             printfn "ldloc 0" //load both operands
             printfn "ldloc 1"
@@ -69,13 +74,13 @@ let rec eval_exp =
             printfn "ceq" //make sure that both comparisons were positive
             printfn "ceq"
         | A.GT ->
-            eval_exp e1
-            eval_exp e2
+            eval_exp' e1
+            eval_exp' e2
             printfn "clt"
         | A.GTE ->
-            eval_exp e1
+            eval_exp' e1
             printfn "stloc 0" //store left operand
-            eval_exp e2
+            eval_exp' e2
             printfn "stloc 1" //store right operand
             printfn "ldloc 0" //load both operands
             printfn "ldloc 1"
@@ -88,7 +93,9 @@ let rec eval_exp =
             printfn "ceq" //make sure that both comparisons were positive
             printfn "ceq"
 
-    | A.NumExp(i) -> printfn $"ldc_I4 {i}"
+    | A.NumExp(i) -> 
+        env.main.Emit(OpCodes.Ldc_I4, i)
+        printfn $"ldc_I4 {i}"
     | A.BoolExp(b) -> printfn $"ldc_I4 {if b then 1 else 0}"
 
     | A.IfExp(if', then', else') ->
@@ -123,9 +130,9 @@ let rec eval_exp =
         printfn "ldarg.0"
         printfn "ldfld type name"
 
-let eval_dec =
+let eval_dec d (env : E.env) =
     // this function needs access to the main class's ilGenerator
-    function
+    match d with
     | A.FunDec(binding, fundec) -> // makeFunc at the top level
         // easy to make function type from this (type list) but how do we call it?
         // make the type returned be abstract
@@ -146,15 +153,19 @@ let eval_dec =
             | _ -> failwith "expecting a variable binding"
 
         printfn "ldarg.0"
-        eval_exp value
+        eval_exp value env
         printfn "stfld type name"
 
-let eval_stm =
+let eval_stm (env: E.env)=
     function
-    | A.Dec(d) -> eval_dec d
-    | A.Exp(e) -> eval_exp e
+    | A.Dec(d) -> eval_dec d env
+    | A.Exp(e) -> eval_exp e env
 
 let eval_prog =
     function
-    | A.Prog(stms) -> List.iter (eval_stm) stms
+    | A.Prog(stms) -> 
+        let env = E.initAsm () //initialize assembly
+        List.iter (eval_stm env) stms //traverse the AST and generate CIL
+        E.finishAsm env // finalize the assembly and return it for export
+        
     | A.Blank -> failwith "No Statements in program"
