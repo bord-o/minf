@@ -1,4 +1,2 @@
-let testbool = false;;
-let acc = 2;;
-
-if testbool then 99 else acc + 25;;
+let add1 = fn (x : int) : int =>
+    x + 1;;

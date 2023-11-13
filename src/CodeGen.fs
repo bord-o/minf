@@ -89,8 +89,8 @@ let rec eval_exp node (env: E.env) =
     | A.NumExp(i) ->
         env.main.Emit(OpCodes.Ldc_I4, i)
         printfn $"ldc_I4 {i}"
-    | A.BoolExp(b) -> 
-        env.main.Emit(OpCodes.Ldc_I4, if b then 1 else 0)
+    | A.BoolExp(b) ->
+        env.main.Emit(OpCodes.Ldc_I4, (if b then 1 else 0))
         printfn $"ldc_I4 {if b then 1 else 0}"
 
     | A.IfExp(if', then', else') ->
@@ -120,11 +120,26 @@ let rec eval_exp node (env: E.env) =
         env.main.MarkLabel(end_l)
         env.main.Emit(OpCodes.Ldloc, res)
 
-    | A.CallExp(name, arg) ->
-        printfn "ldc_I4 arg"
-        printfn "call name"
+    | A.CallExp(funname, arg) ->
+        let name =
+            match funname with
+            | A.Fun x -> x
+            | _ -> failwith "expecting a fun name"
+
+        printfn $"calling {name}"
+        let method = env.prog.GetMethod(name)
+        // let methodArg = method.GetParameters()[0]
+        // let argName = methodArg.Name
+        // printfn "%A" argName
+        // let argVal = env.main.DeclareLocal(typeof<int>)
+        // env.locals <- E.Locals.enter argName argVal env.locals // our single mutation to make the arg in scope of the function
+        eval_exp' arg 
+
+        env.main.Emit(OpCodes.Call, method)
+
     | A.IdExp(name) ->
         printfn "id exp"
+
         let label_name =
             match name with
             | A.Val s -> s
@@ -137,6 +152,7 @@ let eval_dec d (env: E.env) =
     // this function needs access to the main class's ilGenerator
     match d with
     | A.FunDec(binding, fundec) -> // makeFunc at the top level
+        printfn "creating function"
         // easy to make function type from this (type list) but how do we call it?
         // make the type returned be abstract
         let { A.outtype = outtype
@@ -144,14 +160,33 @@ let eval_dec d (env: E.env) =
                         A.type' = intype }
               A.body = body } =
             fundec
-        //call make function
-        printfn "not implemented"
+        let name =
+            match binding with
+            | A.Fun x -> x
+            | _ -> failwith "expecting a fun name"
+
+        let Argname =
+            match argname with
+            | A.Val x -> x
+            | _ -> failwith "expecting var name"
+        let attr = MethodAttributes.Public // ||| MethodAttributes.Static
+        // TODO make actaully use types for method constrution
+        let f =
+            env.prog.DefineMethod(name, attr, CallingConventions.Standard, typeof<int>, [| typeof<int> |])
+        let fIL = f.GetILGenerator()
+        fIL.Emit(OpCodes.Ldarg_1)
+
+        let argVal = fIL.DeclareLocal(typeof<int>)
+        let newLocals = E.Locals.enter Argname argVal env.locals // our single mutation to make the arg in scope of the function
+        eval_exp body {env with main=fIL; locals=newLocals}
+        printfn "function created"
         env
 
     | A.VarDec(binding, value) -> // stloc at the top level
         // associate the binding with the result of this exp in the env
         // TODO make a function to initialize all of the globals in the Program constructor
         printfn "vardec"
+
         let name =
             match binding with
             | A.Val x -> x
@@ -160,15 +195,19 @@ let eval_dec d (env: E.env) =
         let newlocal = env.main.DeclareLocal(typeof<int>)
         eval_exp value env
         env.main.Emit(OpCodes.Stloc, newlocal)
-        {env with locals = E.Locals.enter name newlocal env.locals}
+
+        { env with
+            locals = E.Locals.enter name newlocal env.locals }
 
 
 
-        
+
 let eval_stm (env: E.env) =
     function
     | A.Dec(d) -> eval_dec d env
-    | A.Exp(e) -> eval_exp e env; env
+    | A.Exp(e) ->
+        eval_exp e env
+        env
 
 let eval_prog =
     function

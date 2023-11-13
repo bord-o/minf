@@ -17,7 +17,7 @@ type env =
     {
         prog: TypeBuilder //use this for adding methods
         main: ILGenerator //use this for adding let bindings and entrypoint
-        locals: Locals.t
+        mutable locals: Locals.t
     } 
 
 let initAsm () =
