@@ -1,7 +1,5 @@
 module CodeGen
 open System.Reflection.Emit
-open LicenseToCIL
-open LicenseToCIL.Ops
 
 module A = Ast
 module T = Type
@@ -47,36 +45,55 @@ let rec eval_exp node (env : E.env)=
         | A.Neq ->
             eval_exp' e1
             eval_exp' e2
+            env.main.Emit(OpCodes.Ceq)
             printfn "ceq" // 1 if equal
+            env.main.Emit(OpCodes.Ldc_I4_0)
             printfn "ldc_I4 0"
+            env.main.Emit(OpCodes.Ceq)
             printfn "ceq"
         | A.Eq ->
             eval_exp' e1
             eval_exp' e2
+            env.main.Emit(OpCodes.Ceq)
             printfn "ceq" // 1 if equal
         | A.LT ->
             eval_exp' e1
             eval_exp' e2
             printfn "clt"
+            env.main.Emit(OpCodes.Clt)
         | A.LTE ->
+            let l0 = env.main.DeclareLocal(env.prog)
+            let l1 = env.main.DeclareLocal(env.prog)
             eval_exp' e1
+            env.main.Emit(OpCodes.Stloc, l0)
             printfn "stloc 0" //store left operand
             eval_exp' e2
+            env.main.Emit(OpCodes.Stloc, l1)
             printfn "stloc 1" //store right operand
+            env.main.Emit(OpCodes.Ldloc, l0)
             printfn "ldloc 0" //load both operands
+            env.main.Emit(OpCodes.Ldloc, l1)
             printfn "ldloc 1"
+            env.main.Emit(OpCodes.Clt)
             printfn "clt" //compare less than (leaves comparison on stack)
+            env.main.Emit(OpCodes.Ldloc, l0)
             printfn "ldloc 0"
+            env.main.Emit(OpCodes.Ldloc, l1)
             printfn "ldloc 1"
+            env.main.Emit(OpCodes.Ceq)
             printfn "ceq" //compare equal (leaves comparison on stack)
             // need the top of the stack to be 1,1
+            env.main.Emit(OpCodes.Ldc_I4_1)
             printfn "ldc_I4 1"
+            env.main.Emit(OpCodes.Ceq)
+            env.main.Emit(OpCodes.Ceq)
             printfn "ceq" //make sure that both comparisons were positive
             printfn "ceq"
         | A.GT ->
             eval_exp' e1
             eval_exp' e2
-            printfn "clt"
+            printfn "cgt"
+            env.main.Emit(OpCodes.Cgt)
         | A.GTE ->
             eval_exp' e1
             printfn "stloc 0" //store left operand
