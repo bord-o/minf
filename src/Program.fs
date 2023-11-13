@@ -6,9 +6,7 @@ open FSharp.Text.Lexing
 
 let parseString text =
     let lexbuf = LexBuffer<char>.FromString text
-
     let ast = Parser.start Lexer.tokenstream lexbuf
-
     ()
 
 //printfn "countFromParser: result = %d, expected %d" countFromParser expectedCount
@@ -23,7 +21,8 @@ let parseFile (fileName: string) =
     printfn "%A" <| ast.ToString()
     ignore <| Interp.eval_prog Interp.init_env ast
     let asm =  CodeGen.eval_prog ast
-    Emit.createDll asm "/home/bordo/minf/gen/Gen.dll"
+    //Emit.createDll asm "/home/bordo/minf/gen/Gen.dll"
+    Emit.createDll asm "./Gen.dll"
 
 
 //printfn "countFromParser: result = %d, expected %d" countFromParser expectedCount

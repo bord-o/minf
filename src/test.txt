@@ -1,1 +1,4 @@
-1 <= 1;;
+let testbool = false;;
+let acc = 2;;
+
+if testbool then 99 else acc + 25;;

@@ -1,5 +1,7 @@
 module CodeGen
+
 open System.Reflection.Emit
+open System.Reflection
 
 module A = Ast
 module T = Type
@@ -8,18 +10,10 @@ module E = Emit
 // This module will call out to the CIL module for all il generation functions
 
 
-module Locals =
-    type t = (string * string) list
-    let empty: t = []
-
-    let get table search =
-        List.find (fun (k, v) -> k = search) table |> snd
-
-    let enter k v table = (k, v) :: table
-
-let rec eval_exp node (env : E.env)=
+let rec eval_exp node (env: E.env) =
     // this function needs access to the the ilGenerator for the containing method
     let eval_exp' e = eval_exp e env
+
     match node with
     | A.OpExp(e1, op, e2) ->
         match op with
@@ -62,92 +56,84 @@ let rec eval_exp node (env : E.env)=
             printfn "clt"
             env.main.Emit(OpCodes.Clt)
         | A.LTE ->
-            let l0 = env.main.DeclareLocal(env.prog)
-            let l1 = env.main.DeclareLocal(env.prog)
-            eval_exp' e1
+            let label = env.main.DefineLabel()
+            let l0 = env.main.DeclareLocal(typeof<int>)
+            env.main.Emit(OpCodes.Ldc_I4, 1)
             env.main.Emit(OpCodes.Stloc, l0)
-            printfn "stloc 0" //store left operand
+            eval_exp' e1
             eval_exp' e2
-            env.main.Emit(OpCodes.Stloc, l1)
-            printfn "stloc 1" //store right operand
+            env.main.Emit(OpCodes.Ble, label)
+            env.main.Emit(OpCodes.Ldc_I4, 0)
+            env.main.Emit(OpCodes.Stloc, l0)
+            env.main.MarkLabel(label)
             env.main.Emit(OpCodes.Ldloc, l0)
-            printfn "ldloc 0" //load both operands
-            env.main.Emit(OpCodes.Ldloc, l1)
-            printfn "ldloc 1"
-            env.main.Emit(OpCodes.Clt)
-            printfn "clt" //compare less than (leaves comparison on stack)
-            env.main.Emit(OpCodes.Ldloc, l0)
-            printfn "ldloc 0"
-            env.main.Emit(OpCodes.Ldloc, l1)
-            printfn "ldloc 1"
-            env.main.Emit(OpCodes.Ceq)
-            printfn "ceq" //compare equal (leaves comparison on stack)
-            // need the top of the stack to be 1,1
-            env.main.Emit(OpCodes.Ldc_I4_1)
-            printfn "ldc_I4 1"
-            env.main.Emit(OpCodes.Ceq)
-            env.main.Emit(OpCodes.Ceq)
-            printfn "ceq" //make sure that both comparisons were positive
-            printfn "ceq"
+
         | A.GT ->
             eval_exp' e1
             eval_exp' e2
             printfn "cgt"
             env.main.Emit(OpCodes.Cgt)
         | A.GTE ->
+            let label = env.main.DefineLabel()
+            let l0 = env.main.DeclareLocal(typeof<int>)
+            env.main.Emit(OpCodes.Ldc_I4, 1)
+            env.main.Emit(OpCodes.Stloc, l0)
             eval_exp' e1
-            printfn "stloc 0" //store left operand
             eval_exp' e2
-            printfn "stloc 1" //store right operand
-            printfn "ldloc 0" //load both operands
-            printfn "ldloc 1"
-            printfn "cgt" //compare less than (leaves comparison on stack)
-            printfn "ldloc 0"
-            printfn "ldloc 1"
-            printfn "ceq" //compare equal (leaves comparison on stack)
-            // need the top of the stack to be 1,1
-            printfn "ldc_I4 1"
-            printfn "ceq" //make sure that both comparisons were positive
-            printfn "ceq"
+            env.main.Emit(OpCodes.Bge, label)
+            env.main.Emit(OpCodes.Ldc_I4, 0)
+            env.main.Emit(OpCodes.Stloc, l0)
+            env.main.MarkLabel(label)
+            env.main.Emit(OpCodes.Ldloc, l0)
 
-    | A.NumExp(i) -> 
+    | A.NumExp(i) ->
         env.main.Emit(OpCodes.Ldc_I4, i)
         printfn $"ldc_I4 {i}"
-    | A.BoolExp(b) -> printfn $"ldc_I4 {if b then 1 else 0}"
+    | A.BoolExp(b) -> 
+        env.main.Emit(OpCodes.Ldc_I4, if b then 1 else 0)
+        printfn $"ldc_I4 {if b then 1 else 0}"
 
     | A.IfExp(if', then', else') ->
         // to simply compile a conditional, we create a label(instruction) for the else branch
         // and the end. The end instruction doesn't return, it just leaves the result of the expression
         // at the top of the stack
         // we can use a small assoc list for the labeled opcodes
-        let labels = Locals.empty |> Locals.enter "else" "nop" |> Locals.enter "end" "nop"
-
+        let else_l = env.main.DefineLabel()
+        let end_l = env.main.DefineLabel()
+        let res = env.main.DeclareLocal(typeof<int>)
         printfn $"making label else: {eval_exp else'}" // let lables = ("else", il.Create(Nop))::labels
         printfn $"making label end: ldloc 1" // let lables = ("end", il.Create(Ldloc, 1))::labels
 
-        printfn $"{eval_exp if'}"
+        eval_exp' if'
+        env.main.Emit(OpCodes.Brfalse, else_l)
         printfn $"brfalse  else" //bool
 
-        printfn $"{eval_exp then'}"
-        printfn $"stloc 1"
-        printfn $"br end"
+        eval_exp' then'
+        env.main.Emit(OpCodes.Stloc, res)
+        env.main.Emit(OpCodes.Br, end_l)
 
-        printfn "%s" <| Locals.get labels "else"
-        printfn $"{eval_exp else'}"
-        printfn $"stloc 1"
-        printfn $"br end"
+        env.main.MarkLabel(else_l)
+        eval_exp' else'
+        env.main.Emit(OpCodes.Stloc, res)
+        env.main.Emit(OpCodes.Br, end_l)
 
-        printfn "%s" <| Locals.get labels "end"
-        printfn $"ldloc 1"
+        env.main.MarkLabel(end_l)
+        env.main.Emit(OpCodes.Ldloc, res)
 
     | A.CallExp(name, arg) ->
         printfn "ldc_I4 arg"
         printfn "call name"
     | A.IdExp(name) ->
-        printfn "ldarg.0"
-        printfn "ldfld type name"
+        printfn "id exp"
+        let label_name =
+            match name with
+            | A.Val s -> s
+            | _ -> failwith "expecting local var"
 
-let eval_dec d (env : E.env) =
+        let localval = E.Locals.get env.locals label_name
+        env.main.Emit(OpCodes.Ldloc, localval)
+
+let eval_dec d (env: E.env) =
     // this function needs access to the main class's ilGenerator
     match d with
     | A.FunDec(binding, fundec) -> // makeFunc at the top level
@@ -160,29 +146,35 @@ let eval_dec d (env : E.env) =
             fundec
         //call make function
         printfn "not implemented"
+        env
 
     | A.VarDec(binding, value) -> // stloc at the top level
         // associate the binding with the result of this exp in the env
         // TODO make a function to initialize all of the globals in the Program constructor
+        printfn "vardec"
         let name =
             match binding with
             | A.Val x -> x
             | _ -> failwith "expecting a variable binding"
 
-        printfn "ldarg.0"
+        let newlocal = env.main.DeclareLocal(typeof<int>)
         eval_exp value env
-        printfn "stfld type name"
+        env.main.Emit(OpCodes.Stloc, newlocal)
+        {env with locals = E.Locals.enter name newlocal env.locals}
 
-let eval_stm (env: E.env)=
+
+
+        
+let eval_stm (env: E.env) =
     function
     | A.Dec(d) -> eval_dec d env
-    | A.Exp(e) -> eval_exp e env
+    | A.Exp(e) -> eval_exp e env; env
 
 let eval_prog =
     function
-    | A.Prog(stms) -> 
+    | A.Prog(stms) ->
         let env = E.initAsm () //initialize assembly
-        List.iter (eval_stm env) stms //traverse the AST and generate CIL
-        E.finishAsm env // finalize the assembly and return it for export
-        
+        let new_env = List.fold (fun e -> eval_stm e) env stms //traverse the AST and generate CIL
+        E.finishAsm new_env // finalize the assembly and return it for export
+
     | A.Blank -> failwith "No Statements in program"

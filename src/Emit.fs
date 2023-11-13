@@ -3,10 +3,21 @@ open System
 open System.Reflection
 open System.Reflection.Emit
 
+module Locals =
+    type t = (string * LocalBuilder) list
+    let empty: t = []
+
+    let get table search =
+        List.find (fun (k, v) -> k = search) table |> snd
+
+    let enter k v table = (k, v) :: table
+
+
 type env = 
     {
         prog: TypeBuilder //use this for adding methods
         main: ILGenerator //use this for adding let bindings and entrypoint
+        locals: Locals.t
     } 
 
 let initAsm () =
@@ -50,7 +61,7 @@ let initAsm () =
     mainIL.Emit(OpCodes.Ldstr, "Entering Main in generated code...")
     mainIL.Emit(OpCodes.Call, typeof<Console>.GetMethod("WriteLine", [|typeof<string>|]))
     //mainIL.Emit(OpCodes.Ldc_I4, 26)
-    {prog=programTyBldr; main=mainIL}
+    {prog=programTyBldr; main=mainIL; locals=Locals.empty}
 
 
 let finishAsm (env:env) = 
