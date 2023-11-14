@@ -127,14 +127,18 @@ let rec eval_exp node (env: E.env) =
             | _ -> failwith "expecting a fun name"
 
         printfn $"calling {name}"
-        let method = env.prog.GetMethod(name)
+
+        let concreteT = env.prog
+        let method = concreteT.CreateType().GetMethod(name)
+        printfn "%A" method.IsStatic
+        printfn $"Evaluating argument"
         // let methodArg = method.GetParameters()[0]
         // let argName = methodArg.Name
         // printfn "%A" argName
         // let argVal = env.main.DeclareLocal(typeof<int>)
         // env.locals <- E.Locals.enter argName argVal env.locals // our single mutation to make the arg in scope of the function
         eval_exp' arg 
-
+        printfn $"calling method"
         env.main.Emit(OpCodes.Call, method)
 
     | A.IdExp(name) ->
@@ -146,6 +150,9 @@ let rec eval_exp node (env: E.env) =
             | _ -> failwith "expecting local var"
 
         let localval = E.Locals.get env.locals label_name
+        // how do i make this not throw an error when it is the bound 
+        // variable in a function body?
+        // I could make a eval_body_exp function that uses the rest of the 
         env.main.Emit(OpCodes.Ldloc, localval)
 
 let eval_dec d (env: E.env) =
@@ -169,16 +176,17 @@ let eval_dec d (env: E.env) =
             match argname with
             | A.Val x -> x
             | _ -> failwith "expecting var name"
-        let attr = MethodAttributes.Public // ||| MethodAttributes.Static
+        let attr = MethodAttributes.Public ||| MethodAttributes.Static
         // TODO make actaully use types for method constrution
         let f =
             env.prog.DefineMethod(name, attr, CallingConventions.Standard, typeof<int>, [| typeof<int> |])
         let fIL = f.GetILGenerator()
-        fIL.Emit(OpCodes.Ldarg_1)
-
         let argVal = fIL.DeclareLocal(typeof<int>)
+        fIL.Emit(OpCodes.Ldarg_0) //load our single arg
+        fIL.Emit(OpCodes.Stloc, argVal) //store it in the local were expecting our arg to be named
         let newLocals = E.Locals.enter Argname argVal env.locals // our single mutation to make the arg in scope of the function
         eval_exp body {env with main=fIL; locals=newLocals}
+        fIL.Emit(OpCodes.Ret)
         printfn "function created"
         env
 
