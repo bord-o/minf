@@ -7,16 +7,14 @@ let pp s = ignore s
 %start start
 
 // Regular tokens
-%token LET EXPEND ASSIGN OPAREN CPAREN IF THEN ELSE IS COLON FUN PLUS MINUS TIMES LT GT LTE GTE TRUE FALSE NEQ
+%token LET EXPEND ASSIGN OPAREN CPAREN IF THEN ELSE IS COLON FUN PLUS MINUS TIMES LT GT LTE GTE TRUE FALSE NEQ GETS SEMI
 %token <int> NUMBER
 %token <string> ID
 
 %left ELSE
+%left GETS
 %left NEQ PLUS MINUS TIMES LT GT LTE GTE 
 %right IF ASSIGN ID OPAREN NUMBER
-
-
-
 
 
 // Misc tokens
@@ -52,13 +50,22 @@ fun_arg:
     | ID COLON ID {pp "funarg"; {argname=A.Val($1); type'=A.Ty($3)}}
 
 exp:
-    | OPAREN exp CPAREN {$2}
+    | OPAREN explist CPAREN {$2}
+    | OPAREN CPAREN {A.Unit}
     | number_lit {$1}
     | bool_lit {$1}
     | identifier_lit {$1}
     | op_exp {$1}
     | call_exp {$1}
     | if_exp {$1}
+    | mut_exp {$1}
+
+explist:
+    | exp SEMI explist {pp "evaluating list"; let l = match $3 with A.ExprLst v -> v in A.ExprLst($1::l)}
+    | exp {A.ExprLst($1::[])}
+
+mut_exp:
+    | ID GETS exp {pp "gets"; A.MutExp(A.Val($1), $3)}
 
 if_exp:
     | IF exp THEN exp ELSE exp {pp "if then else"; A.IfExp($2, $4, $6)} 

@@ -16,9 +16,12 @@ and exp =
     | OpExp of exp * op * exp
     | NumExp of int
     | BoolExp of bool
+    | Unit
     | IfExp of exp * exp * exp
     | CallExp of id * exp
     | IdExp of id
+    | MutExp of id * exp
+    | ExprLst of exp list
 
 and id =
     | Ty of string

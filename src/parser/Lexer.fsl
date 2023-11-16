@@ -22,10 +22,12 @@ rule tokenstream = parse
 | "then"			{Parser.THEN}
 | "else"			{Parser.ELSE}
 | "=>"				{Parser.IS}
+| "<-"				{Parser.GETS}
 | "fn"				{Parser.FUN}
 | "true"			{Parser.TRUE}
 | "false"			{Parser.FALSE}
 | ":"				{Parser.COLON}
+| ";"       {Parser.SEMI}
 | "="			{ Parser.ASSIGN}
 
 | char(char|digit)?+ { Parser.ID(LexBuffer<_>.LexemeString lexbuf)}

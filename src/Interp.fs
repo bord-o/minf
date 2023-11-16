@@ -7,15 +7,18 @@ type table = Map<A.id, T.value>
 
 type env =
     { types: Map<A.id, T.abstype>
-      variables: table
+      mutable variables: table
       functions: table }
-
 let init_env =
-    { types = Map.add (A.Ty "bool") T.TBool (Map.add (A.Ty "int") T.TInt Map.empty<A.id, T.abstype>)
+    { types = 
+        Map.empty<A.id, T.abstype>
+        |> (Map.add (A.Ty "bool") T.TBool)
+        |> (Map.add (A.Ty "int") T.TInt)
+        |> (Map.add (A.Ty "unit") T.TUnit)
       variables = Map.empty<A.id, T.value>
       functions = Map.empty<A.id, T.value> }
 
-
+let stack_depth = ref 0
 let rec type_of_result (v: T.value) : T.abstype =
     match v with
     | T.Val t ->
@@ -33,7 +36,7 @@ let eval_ty_id env =
         let tytable = env.types
         match tytable.TryFind(A.Ty name) with
         | Some res -> res
-        | None -> failwith "fun not bound"
+        | None -> failwith "type not bound"
     | _ -> failwith "expected type"
 
 //eval_fun_id -> value (Fun)
@@ -75,7 +78,6 @@ let checkbool b =
     | T.Int(_) -> failwith $"Expected bool got int"
     | T.Unit -> failwith $"Expected bool got unit"
 
-
 let rec eval_exp env =
     function
     | A.OpExp(e1, op, e2) ->
@@ -104,6 +106,22 @@ let rec eval_exp env =
             (eval_exp env else')
     | A.CallExp(name, arg) -> call env name (eval_exp env arg)
     | A.IdExp(name) -> eval_val_id env name
+    | A.MutExp(id, value) ->
+        let assign = eval_exp env value
+        let updater (t:T.value option) :T.value option = 
+            let t = if t.IsNone then failwith "val not bound" else t.Value
+            Some (T.Val assign)
+        let updated = 
+            env.variables
+            |> Map.change id updater 
+        env.variables <- updated
+        //printfn "Updating env %A" env.variables
+        T.Unit
+
+    | A.ExprLst (l) ->
+        let evaluations = List.map (fun e -> eval_exp env e) l
+        List.last evaluations
+    | A.Unit -> T.Unit
 
 and call (env: env) (funname: A.id) (arg: T.type') = 
     // find the local arg name of the function's exp, then bind the passed arg
@@ -125,7 +143,10 @@ and call (env: env) (funname: A.id) (arg: T.type') =
         | None -> failwith "Function not found"
 
     let local_env = {env with variables=Map.add arg_name (T.Val arg) env.variables}
-    let result = eval_exp local_env body
+    let result = printfn "increase: %A" !stack_depth;incr stack_depth; eval_exp local_env body
+    printfn "decrease: %A" !stack_depth
+    decr stack_depth
+    env.variables <- Map.remove arg_name local_env.variables
     result
 
 

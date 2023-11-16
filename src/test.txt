@@ -1,9 +1,16 @@
-let fact =
-  fn (n : int) : int =>
-    if n=0 then 1 else n * fact (n-1) ;;
+let x = 0;;
+let y = 1;;
+let z = 0;;
+let i = 0;;
 
-let fib =
-    fn (n:int) : int =>
-        (if n = 0 then 0 else if n = 1 then 1 else fib (n-2) + fib (n-1));;
 
-fib 33;;
+let iterfac =
+	fn (n : int) : int =>
+		if n = i then x else
+		(z <- x + y;
+		x <- y;
+		y <- z;
+		i <- i + 1;
+		iterfac(n));;
+		
+iterfac 10;;

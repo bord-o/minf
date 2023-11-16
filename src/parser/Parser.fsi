@@ -25,6 +25,8 @@ type token =
   | TRUE
   | FALSE
   | NEQ
+  | GETS
+  | SEMI
 type tokenId = 
     | TOKEN_EOF
     | TOKEN_ID
@@ -50,6 +52,8 @@ type tokenId =
     | TOKEN_TRUE
     | TOKEN_FALSE
     | TOKEN_NEQ
+    | TOKEN_GETS
+    | TOKEN_SEMI
     | TOKEN_end_of_input
     | TOKEN_error
 type nonTerminalId = 
@@ -61,6 +65,8 @@ type nonTerminalId =
     | NONTERM_fun
     | NONTERM_fun_arg
     | NONTERM_exp
+    | NONTERM_explist
+    | NONTERM_mut_exp
     | NONTERM_if_exp
     | NONTERM_call_exp
     | NONTERM_op_exp
