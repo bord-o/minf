@@ -4,13 +4,28 @@ let z = 0;;
 let i = 0;;
 
 
-let iterfac =
+let iterfib =
 	fn (n : int) : int =>
 		if n = i then x else
 		(z <- x + y;
 		x <- y;
 		y <- z;
 		i <- i + 1;
-		iterfac(n));;
+		iterfib(n));;
+
+let res = 1;;
+let iterfact = 
+	fn (n: int ) :int =>
+		if n = 0 then res else
+		(res <- res * n;
+		iterfact (n-1));;
+
+let n = 100;;
+let loop = 
+	fn (nil: unit):unit =>
+		if n = 0 then () else (n <- n - 1; loop());;
+loop();;
+
+
+
 		
-iterfac 10;;
